@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Catálogo Online</title>
+  <style>
+    :root { --primaria: #0f4c81; --secundaria: #1e88e5; --fundo: #f4f6f9; --texto: #222; }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+    body { background: var(--fundo); color: var(--texto); padding-bottom: 80px; }
+    header { background: var(--primaria); color: #fff; padding: 16px; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 6px rgba(0,0,0,0.15); }
+    .topo { max-width: 1100px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; gap: 10px; }
+    .topo h1 { font-size: 1.2rem; }
+    .btn-carrinho { background: #25d366; color: #fff; border: none; padding: 10px 14px; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 0.95rem; }
+    .filtros { max-width: 1100px; margin: 16px auto; padding: 0 16px; display: flex; flex-direction: column; gap: 10px; }
+    #busca { width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 8px; font-size: 1rem; }
+    .categorias { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 4px; }
+    .cat-btn { background: #fff; border: 1px solid #ddd; padding: 6px 14px; border-radius: 20px; cursor: pointer; white-space: nowrap; font-size: 0.9rem; }
+    .cat-btn.ativa { background: var(--primaria); color: #fff; border-color: var(--primaria); }
+    .grid { max-width: 1100px; margin: 0 auto; padding: 0 16px; display: grid; grid-template-columns: repeat(auto-fill, minmax(165px, 1fr)); gap: 14px; }
+    .card { background: #fff; border-radius: 10px; padding: 12px; box-shadow: 0 1px 4px rgba(0,0,0,0.08); display: flex; flex-direction: column; justify-content: space-between; }
+    .card img { width: 100%; height: 140px; object-fit: contain; border-radius: 6px; background: #fafafa; margin-bottom: 8px; }
+    .sku { font-size: 0.75rem; color: #777; }
+    .nome { font-size: 0.95rem; font-weight: 600; margin: 4px 0; line-height: 1.3; }
+    .preco { font-size: 1.1rem; font-weight: bold; color: var(--primaria); margin: 6px 0; }
+    .btn-add { width: 100%; background: var(--secundaria); color: #fff; border: none; padding: 9px; border-radius: 6px; font-weight: 600; cursor: pointer; }
+    .modal-bg { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 200; justify-content: flex-end; }
+    .modal { background: #fff; width: 100%; max-width: 420px; height: 100%; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; justify-content: space-between; }
+    .item-carrinho { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #eee; padding: 10px 0; gap: 8px; }
+    .qtd-ctrl button { width: 26px; height: 26px; border: 1px solid #ccc; background: #f9f9f9; border-radius: 4px; cursor: pointer; }
+    .campo { margin-top: 12px; }
+    .campo label { display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 4px; }
+    .campo input, .campo select { width: 100%; padding: 9px; border: 1px solid #ccc; border-radius: 6px; }
+    .btn-whats { width: 100%; background: #25d366; color: #fff; border: none; padding: 14px; border-radius: 8px; font-size: 1rem; font-weight: bold; cursor: pointer; margin-top: 16px; }
+  </style>
+</head>
+<body>
+
+<script>
+  // ================= CONFIGURAÇÃO DA SUA LOJA =================
+  const NOME_LOJA = "Catálogo da Loja";
+  const LINK_PLANILHA_CSV = "https://google.com";
+  
+  // 👇👇👇 TROQUE O NÚMERO ABAIXO PELO SEU WHATSAPP (55 + DDD + NUMERO) 👇👇👇
+  const WHATSAPP_LOJA = "5521967601536"; 
+  
+  const ENDERECO_RETIRADA = "Retirada na Loja Física - São Gonçalo/RJ";
+  // ============================================================
+</script>
+
+<header>
+  <div class="topo">
+    <h1 id="titulo-loja">Catálogo da Loja</h1>
+    <button class="btn-carrinho" onclick="abrirCarrinho()">🛒 Carrinho (<span id="qtd-total">0</span>)</button>
+  </div>
+</header>
+
+<div class="filtros">
+  <input type="text" id="busca" placeholder="Buscar produto por nome ou código..." oninput="filtrar()" />
+  <div class="categorias" id="lista-categorias"></div>
+</div>
+
+<div class="grid" id="vitrine"><p style="padding:20px;">Carregando produtos...</p></div>
+
+<div class="modal-bg" id="modal-carrinho">
+  <div class="modal">
+    <div>
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+        <h2>Seu Pedido</h2>
+        <button onclick="fecharCarrinho()" style="border:none; background:none; font-size:1.4rem; cursor:pointer;">✕</button>
+      </div>
+      <div id="itens-carrinho"></div>
+      <h3 style="margin-top:14px; text-align:right;">Total: R$ <span id="valor-total">0,00</span></h3>
+
+      <div class="campo">
+        <label>Seu Nome *</label>
+        <input type="text" id="cliente-nome" placeholder="Digite seu nome" />
+      </div>
+
+      <div class="campo">
+        <label>Como deseja receber? *</label>
+        <select id="tipo-entrega" onchange="alternarEndereco()">
+          <option value="Retirada na Loja">🏪 Retirar na Loja (Grátis)</option>
+          <option value="Entrega Local">🛵 Entrega Local / Motoboy</option>
+          <option value="Envio Correios/Transportadora">📦 Envio por Correios / Transportadora</option>
+        </select>
+      </div>
+
+      <div class="campo" id="box-retirada" style="background:#eef6ff; padding:8px; border-radius:6px; font-size:0.85rem;"></div>
+
+      <div class="campo" id="box-endereco" style="display:none;">
+        <label>Endereço Completo e CEP *</label>
+        <input type="text" id="cliente-endereco" placeholder="Rua, número, bairro, cidade e CEP" />
+      </div>
+
+      <div class="campo">
+        <label>Forma de Pagamento</label>
+        <select id="pagamento">
+          <option value="Pix">Pix</option>
+          <option value="Cartão na Entrega/Retirada">Cartão (Crédito/Débito)</option>
+          <option value="Dinheiro">Dinheiro</option>
+        </select>
+      </div>
+    </div>
+
+    <button class="btn-whats" onclick="enviarWhatsApp()">🚀 Enviar Pedido no WhatsApp</button>
+  </div>
+</div>
+
+<script>
+  document.getElementById("titulo-loja").innerText = NOME_LOJA;
+  document.getElementById("box-retirada").innerText = "📍 " + ENDERECO_RETIRADA;
+
+  let produtos = [];
+  let carrinho = [];
+  let catAtual = "Todos";
+  const FOTO_PADRAO = "https://flaticon.com";
+
+  async function carregarProdutos() {
+    try {
+      const resp = await fetch(LINK_PLANILHA_CSV);
+      const texto = await resp.text();
+      const linhas = texto.split(/\r?\n/).slice(1);
+      produtos = linhas.map(l => {
+        const cols = l.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/).map(c => c.replace(/^"|"$/g, "").trim());
+        const precoLimpo = (cols[3] || "0").replace("R$", "").replace(/\./g, "").replace(",", ".").trim();
+        return {
+          sku: cols[0] || "",
+          nome: cols[1] || "",
+          categoria: cols[2] || "Geral",
+          preco: parseFloat(precoLimpo) || 0,
+          foto: cols[4] && cols[4].startsWith("http") ? cols[4] : FOTO_PADRAO,
+          estoque: parseInt(cols[5]) || 0
+        };
+      }).filter(p => p.nome && p.estoque > 0);
+
+      gerarCategorias();
+      renderizar(produtos);
+    } catch (e) {
+      document.getElementById("vitrine").innerHTML = "<p>Erro ao carregar planilha.</p>";
+    }
+  }
+
+  function gerarCategorias() {
+    const cats = ["Todos", ...new Set(produtos.map(p => p.categoria))];
+    const div = document.getElementById("lista-categorias");
+    div.innerHTML = cats.map(c => `<button class="cat-btn ${c === 'Todos' ? 'ativa' : ''}" onclick="selecionarCat('${c}', this)">${c}</button>`).join("");
+  }
+
+  function selecionarCat(cat, btn) {
+    catAtual = cat;
+    document.querySelectorAll(".cat-btn").forEach(b => b.classList.remove("ativa"));
+    btn.classList.add("ativa");
+    filtrar();
+  }
+
+  function filtrar() {
+    const termo = document.getElementById("busca").value.toLowerCase();
+    const filtrados = produtos.filter(p => {
+      const bateCat = catAtual === "Todos" || p.categoria === catAtual;
+      const bateTexto = p.nome.toLowerCase().includes(termo) || p.sku.toLowerCase().includes(termo);
+      return bateCat && bateTexto;
+    });
+    renderizar(filtrados);
+  }
+
+  function renderizar(lista) {
+    const vitrine = document.getElementById("vitrine");
+    if (!lista.length) { vitrine.innerHTML = "<p>Nenhum produto com estoque encontrado.</p>"; return; }
+    vitrine.innerHTML = lista.slice(0, 60).map(p => `
+      <div class="card">
+        <div>
+          <img src="${p.foto}" onerror="this.src='${FOTO_PADRAO}'" loading="lazy" />
+          <div class="sku">Cód: ${p.sku} | ${p.categoria}</div>
+          <div class="nome">${p.nome}</div>
+        </div>
+        <div>
+          <div class="preco">R$ ${p.preco.toFixed(2).replace(".", ",")}</div>
+          <button class="btn-add" onclick="adicionar('${p.sku}')">+ Adicionar</button>
+        </div>
+      </div>
+    `).join("");
+  }
+
+  function adicionar(sku) {
+    const prod = produtos.find(p => p.sku === sku);
+    const item = carrinho.find(i => i.sku === sku);
+    if (item) { item.qtd++; } else { carrinho.push({ ...prod, qtd: 1 }); }
+    atualizarCarrinho();
+  }
+
+  function alterarQtd(sku, delta) {
+    const idx = carrinho.findIndex(i => i.sku === sku);
+    if (idx > -1) {
+      carrinho[idx].qtd += delta;
+      if (carrinho[idx].qtd <= 0) carrinho.splice(idx, 1);
+    }
+    atualizarCarrinho();
+  }
+
+  function atualizarCarrinho() {
+    document.getElementById("qtd-total").innerText = carrinho.reduce((s, i) => s + i.qtd, 0);
+    const total = carrinho.reduce((s, i) => s + (i.preco * i.qtd), 0);
