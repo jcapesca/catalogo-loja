@@ -32,7 +32,7 @@
 
 <script>
   const NOME_LOJA = "JCA Pesca & Bazar";
-  const ID_PLANILHA = "COLE_O_ID_DA_SUA_PLANILHA_AQUI";
+  const ID_PLANILHA = "1aqXlxsuLk8KuyuDr73IDyI1ZtfFqSFoIko9lYg1M2N4";
   const WHATSAPP = "5521999999999";
   const RETIRADA = "Retirada na Loja Física - São Gonçalo/RJ";
 </script>
@@ -109,7 +109,7 @@
     const s = document.createElement("script");
     s.src = "https://google.com" + ID_PLANILHA + "/gviz/tq?tqx=out:json&gid=0";
     s.onerror = () => {
-      document.getElementById("vitrine").innerHTML = "<p>Verifique o ID da planilha e se ela está como 'Qualquer pessoa com o link pode ver'.</p>";
+      document.getElementById("vitrine").innerHTML = "<p>Verifique se a planilha está como 'Qualquer pessoa com o link pode ver'.</p>";
     };
     document.body.appendChild(s);
   }
