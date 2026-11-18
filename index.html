@@ -38,12 +38,9 @@
 
 <script>
   // ================= CONFIGURAÇÃO DA SUA LOJA =================
-  const NOME_LOJA = "Catálogo da Loja";
+  const NOME_LOJA = "JCA Pesca & Bazar";
   const LINK_PLANILHA_CSV = "https://google.com";
-  
-  // 👇👇👇 TROQUE O NÚMERO ABAIXO PELO SEU WHATSAPP (55 + DDD + NUMERO) 👇👇👇
-  const WHATSAPP_LOJA = "5521967601536"; 
-  
+  const WHATSAPP_LOJA = "5521999999999"; // <-- COLOQUE SEU WHATSAPP AQUI (55 + DDD + NUMERO)
   const ENDERECO_RETIRADA = "Retirada na Loja Física - São Gonçalo/RJ";
   // ============================================================
 </script>
@@ -137,7 +134,7 @@
       gerarCategorias();
       renderizar(produtos);
     } catch (e) {
-      document.getElementById("vitrine").innerHTML = "<p>Erro ao carregar planilha.</p>";
+      document.getElementById("vitrine").innerHTML = "<p>Erro ao carregar planilha. Verifique o link CSV.</p>";
     }
   }
 
@@ -166,7 +163,7 @@
 
   function renderizar(lista) {
     const vitrine = document.getElementById("vitrine");
-    if (!lista.length) { vitrine.innerHTML = "<p>Nenhum produto com estoque encontrado.</p>"; return; }
+    if (!lista.length) { vitrine.innerHTML = "<p style='padding:20px;'>Nenhum produto encontrado com estoque.</p>"; return; }
     vitrine.innerHTML = lista.slice(0, 60).map(p => `
       <div class="card">
         <div>
