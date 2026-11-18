@@ -40,7 +40,7 @@
   // ================= CONFIGURAÇÃO DA SUA LOJA =================
   const NOME_LOJA = "JCA Pesca & Bazar";
   const LINK_PLANILHA_CSV = "https://google.com";
-  const WHATSAPP_LOJA = "5521967601536"; // TROQUE PELO SEU WHATSAPP (55 + DDD + NUMERO)
+  const WHATSAPP_LOJA = "5521967601536"; // TROQUE PELO SEU WHATSAPP (55 + DDD + Numero)
   const ENDERECO_RETIRADA = "Retirada na Loja Física - São Gonçalo/RJ";
   // ============================================================
 </script>
@@ -113,29 +113,20 @@
   let catAtual = "Todos";
   const FOTO_PADRAO = "https://flaticon.com";
 
-  function limparPreco(valor) {
-    if (!valor) return 0;
-    let limpo = valor.replace(/R\$\s*/gi, "").trim();
-    if (limpo.includes(",")) {
-      limpo = limpo.replace(/\./g, "").replace(",", ".");
-    }
-    return parseFloat(limpo) || 0;
-  }
-
   async function carregarProdutos() {
     try {
       const resp = await fetch(LINK_PLANILHA_CSV);
       const texto = await resp.text();
       const linhas = texto.split(/\r?\n/).slice(1);
-
       produtos = linhas.map(l => {
         const cols = l.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/).map(c => c.replace(/^"|"$/g, "").trim());
+        const precoLimpo = (cols[3] || "0").replace("R$", "").replace(/\./g, "").replace(",", ".").trim();
         return {
           sku: cols[0] || "",
           nome: cols[1] || "",
           categoria: cols[2] || "Geral",
-          preco: limparPreco(cols[3]),
-          foto: (cols[4] && cols[4].startsWith("http")) ? cols[4] : FOTO_PADRAO,
+          preco: parseFloat(precoLimpo) || 0,
+          foto: cols[4] && cols[4].startsWith("http") ? cols[4] : FOTO_PADRAO,
           estoque: parseInt(cols[5]) || 0
         };
       }).filter(p => p.nome && p.estoque > 0);
@@ -143,7 +134,7 @@
       gerarCategorias();
       renderizar(produtos);
     } catch (e) {
-      document.getElementById("vitrine").innerHTML = "<p style='padding:20px;'>Erro ao carregar planilha. Verifique o link CSV.</p>";
+      document.getElementById("vitrine").innerHTML = "<p>Erro ao carregar planilha.</p>";
     }
   }
 
@@ -172,7 +163,7 @@
 
   function renderizar(lista) {
     const vitrine = document.getElementById("vitrine");
-    if (!lista.length) { vitrine.innerHTML = "<p style='padding:20px;'>Nenhum produto encontrado.</p>"; return; }
+    if (!lista.length) { vitrine.innerHTML = "<p>Nenhum produto encontrado.</p>"; return; }
     vitrine.innerHTML = lista.slice(0, 60).map(p => `
       <div class="card">
         <div>
@@ -205,3 +196,6 @@
   }
 
   function atualizarCarrinho() {
+    document.getElementById("qtd-total").innerText = carrinho.reduce((s, i) => s + i.qtd, 0);
+    const total = carrinho.reduce((s, i) => s + (i.preco * i.qtd), 0);
+    document.getElementById("valor-total").innerText = total.toFixed(2).replace(".", ",");
