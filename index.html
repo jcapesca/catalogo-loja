@@ -1,67 +1,192 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>JCA Pesca & Bazar</title>
-<style>
-*{box-sizing:border-box;margin:0;padding:0;font-family:sans-serif}body{background:#f4f6f9;padding-bottom:60px}
-header{background:#0f4c81;color:#fff;padding:15px;position:sticky;top:0;z-index:10;display:flex;justify-content:space-between;align-items:center}
-.btn-cart{background:#25d366;color:#fff;border:0;padding:10px 14px;border-radius:8px;font-weight:bold;cursor:pointer}
-.filtros{max-width:1000px;margin:15px auto;padding:0 15px}#busca{width:100%;padding:12px;border:1px solid #ccc;border-radius:8px;margin-bottom:10px}
-.cats{display:flex;gap:8px;overflow-x:auto}.cat-btn{background:#fff;border:1px solid #ddd;padding:6px 14px;border-radius:20px;cursor:pointer}
-.cat-btn.ativa{background:#0f4c81;color:#fff}.grid{max-width:1000px;margin:0 auto;padding:0 15px;display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:12px}
-.card{background:#fff;border-radius:10px;padding:12px;box-shadow:0 1px 4px rgba(0,0,0,.1);display:flex;flex-direction:column;justify-content:space-between}
-.card img{width:100%;height:120px;object-fit:contain;margin-bottom:8px}.preco{font-size:1.1rem;font-weight:bold;color:#0f4c81;margin:6px 0}
-.btn-add{width:100%;background:#1e88e5;color:#fff;border:0;padding:9px;border-radius:6px;font-weight:bold;cursor:pointer}
-.modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:20;justify-content:flex-end}
-.modal{background:#fff;width:100%;max-width:400px;height:100%;padding:20px;overflow-y:auto;display:flex;flex-direction:column;justify-content:space-between}
-.item{display:flex;justify-content:space-between;border-bottom:1px solid #eee;padding:8px 0}.campo{margin-top:10px}
-.campo label{display:block;font-size:.85rem;font-weight:bold;margin-bottom:4px}.campo input,.campo select{width:100%;padding:8px;border:1px solid #ccc;border-radius:6px}
-.btn-whats{width:100%;background:#25d366;color:#fff;border:0;padding:14px;border-radius:8px;font-size:1rem;font-weight:bold;cursor:pointer;margin-top:15px}
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>JCA Pesca & Bazar - Catálogo Online</title>
+  <style>
+    :root { --primaria: #0f4c81; --secundaria: #1e88e5; --fundo: #f4f6f9; --texto: #222; }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+    body { background: var(--fundo); color: var(--texto); padding-bottom: 80px; }
+    header { background: var(--primaria); color: #fff; padding: 16px; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 6px rgba(0,0,0,0.15); }
+    .topo { max-width: 1100px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; gap: 10px; }
+    .topo h1 { font-size: 1.25rem; letter-spacing: 0.3px; }
+    .btn-carrinho { background: #25d366; color: #fff; border: none; padding: 10px 16px; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 0.95rem; }
+    .filtros { max-width: 1100px; margin: 16px auto; padding: 0 16px; display: flex; flex-direction: column; gap: 10px; }
+    #busca { width: 100%; padding: 12px 14px; border: 1px solid #ccc; border-radius: 8px; font-size: 1rem; background: #fff; }
+    .categorias { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 4px; }
+    .cat-btn { background: #fff; border: 1px solid #ddd; padding: 7px 15px; border-radius: 20px; cursor: pointer; white-space: nowrap; font-size: 0.9rem; }
+    .cat-btn.ativa { background: var(--primaria); color: #fff; border-color: var(--primaria); font-weight: 600; }
+    .grid { max-width: 1100px; margin: 0 auto; padding: 0 16px; display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 14px; }
+    .card { background: #fff; border-radius: 10px; padding: 12px; box-shadow: 0 1px 4px rgba(0,0,0,0.08); display: flex; flex-direction: column; justify-content: space-between; }
+    .card img { width: 100%; height: 140px; object-fit: contain; border-radius: 6px; background: #fafafa; margin-bottom: 8px; }
+    .sku { font-size: 0.75rem; color: #777; }
+    .nome { font-size: 0.95rem; font-weight: 600; margin: 4px 0; line-height: 1.3; }
+    .preco { font-size: 1.15rem; font-weight: bold; color: var(--primaria); margin: 6px 0; }
+    .btn-add { width: 100%; background: var(--secundaria); color: #fff; border: none; padding: 10px; border-radius: 6px; font-weight: 600; cursor: pointer; }
+    .modal-bg { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 200; justify-content: flex-end; }
+    .modal { background: #fff; width: 100%; max-width: 420px; height: 100%; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; justify-content: space-between; }
+    .item-carrinho { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #eee; padding: 10px 0; gap: 8px; }
+    .qtd-ctrl button { width: 28px; height: 28px; border: 1px solid #ccc; background: #f9f9f9; border-radius: 4px; cursor: pointer; font-weight: bold; }
+    .campo { margin-top: 12px; }
+    .campo label { display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 4px; }
+    .campo input, .campo select { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px; font-size: 0.95rem; }
+    .btn-whats { width: 100%; background: #25d366; color: #fff; border: none; padding: 14px; border-radius: 8px; font-size: 1rem; font-weight: bold; cursor: pointer; margin-top: 16px; }
+  </style>
 </head>
 <body>
-<header><h2>JCA Pesca & Bazar</h2><button class="btn-cart" onclick="abrir()">🛒 Carrinho (<span id="qtd">0</span>)</button></header>
-<div class="filtros"><input type="text" id="busca" placeholder="Buscar produto ou código..." oninput="filtrar()"><div class="cats" id="cats"></div></div>
-<div class="grid" id="vitrine"><p>Carregando produtos...</p></div>
-<div class="modal-bg" id="modal"><div class="modal"><div>
-<div style="display:flex;justify-content:space-between;margin-bottom:10px"><h3>Seu Pedido</h3><button onclick="fechar()" style="border:0;background:none;font-size:1.3rem;cursor:pointer">✕</button></div>
-<div id="itens"></div><h3 style="margin-top:12px;text-align:right">Total: R$ <span id="total">0,00</span></h3>
-<div class="campo"><label>Seu Nome *</label><input type="text" id="nome"></div>
-<div class="campo"><label>Recebimento *</label><select id="entrega" onchange="mudarEnt()"><option value="Retirada na Loja">🏪 Retirar na Loja (Grátis)</option><option value="Entrega Local">🛵 Entrega Local / Motoboy</option><option value="Correios/Transportadora">📦 Correios / Transportadora</option></select></div>
-<div class="campo" id="info-ret" style="background:#eef6ff;padding:8px;border-radius:6px;font-size:.85rem">📍 Retirada na Loja Física - São Gonçalo/RJ</div>
-<div class="campo" id="box-end" style="display:none"><label>Endereço e CEP *</label><input type="text" id="end"></div>
-<div class="campo"><label>Pagamento</label><select id="pag"><option>Pix</option><option>Cartão</option><option>Dinheiro</option></select></div>
-</div><button class="btn-whats" onclick="enviar()">🚀 Enviar no WhatsApp</button></div></div>
+
 <script>
-const ID = "1aqXlxsuLk8KuyuDr73IDyI1ZtfFqSFoIko9lYg1M2N4";
-const ZAP = "5521999999999";
-let prods = [], cart = [], cat = "Todos";
-const IMG = "data:image/svg+xml;utf8,<svg xmlns='http://w3.org' width='120' height='120' viewBox='0 0 24 24' fill='none' stroke='%23999' stroke-width='1.5'><rect x='3' y='3' width='18' height='18' rx='2'/><circle cx='8.5' cy='8.5' r='1.5'/><path d='M21 15l-5-5L5 21'/></svg>";
-window.google = { visualization: { Query: { setResponse: r => {
-  prods = (r.table.rows || []).map(x => {
-    const c = x.c || [];
-    const v = i => (c.at(i) && c.at(i).v != null) ? String(c.at(i).v).trim() : "";
-    const n = i => (c.at(i) && typeof c.at(i).v === "number") ? c.at(i).v : parseFloat(v(i).replace("R$","").replace(/\./g,"").replace(",",".")) || 0;
-    return { sku: v(0), nome: v(1), cat: v(2) || "Geral", preco: n(3), foto: v(4).startsWith("http") ? v(4) : IMG, est: parseInt(n(5)) || 0 };
-  }).filter(p => p.nome && p.nome.toLowerCase() !== "nome" && p.est > 0);
-  document.getElementById("cats").innerHTML = ["Todos", ...new Set(prods.map(p => p.cat))].map(c => `<button class="cat-btn ${c==='Todos'?'ativa':''}" onclick="setCat('${c}',this)">${c}</button>`).join("");
-  desenhar(prods);
-}}}};
-const s = document.createElement("script");
-s.src = "https://google.com" + ID + "/gviz/tq?tqx=out:script&gid=0";
-s.onerror = () => document.getElementById("vitrine").innerHTML = "<p>Erro ao acessar planilha. Verifique o compartilhamento.</p>";
-document.body.appendChild(s);
-function setCat(c, b){ cat = c; document.querySelectorAll(".cat-btn").forEach(x => x.classList.remove("ativa")); b.classList.add("ativa"); filtrar(); }
-function filtrar(){ const t = document.getElementById("busca").value.toLowerCase(); desenhar(prods.filter(p => (cat === "Todos" || p.cat === cat) && (p.nome.toLowerCase().includes(t) || p.sku.toLowerCase().includes(t)))); }
-function desenhar(l){ document.getElementById("vitrine").innerHTML = l.slice(0,60).map(p => `<div class="card"><div><img src="${p.foto}" onerror="this.src='${IMG}'"><small style="color:#777">Cód: ${p.sku}</small><div style="font-weight:bold;margin:4px 0">${p.nome}</div></div><div><div class="preco">R$ ${p.preco.toFixed(2).replace(".",",")}</div><button class="btn-add" onclick="add('${p.sku}')">+ Adicionar</button></div></div>`).join("") || "<p>Nenhum item com estoque encontrado.</p>"; }
-function add(sku){ const i = cart.find(x => x.sku === sku); if(i) i.qtd++; else cart.push({...prods.find(x => x.sku === sku), qtd:1}); att(); }
-function mQtd(sku, d){ const i = cart.findIndex(x => x.sku === sku); cart[i].qtd += d; if(cart[i].qtd <= 0) cart.splice(i,1); att(); }
-function att(){ document.getElementById("qtd").innerText = cart.reduce((s,i)=>s+i.qtd,0); document.getElementById("total").innerText = cart.reduce((s,i)=>s+i.preco*i.qtd,0).toFixed(2).replace(".",","); document.getElementById("itens").innerHTML = cart.map(i => `<div class="item"><div><b>${i.nome}</b><br>R$ ${(i.preco*i.qtd).toFixed(2).replace(".",",")}</div><div><button onclick="mQtd('${i.sku}',-1)">-</button> ${i.qtd} <button onclick="mQtd('${i.sku}',1)">+</button></div></div>`).join("") || "<p>Carrinho vazio.</p>"; }
-function abrir(){ document.getElementById("modal").style.display = "flex"; att(); }
-function fechar(){ document.getElementById("modal").style.display = "none"; }
-function mudarEnt(){ const r = document.getElementById("entrega").value === "Retirada na Loja"; document.getElementById("info-ret").style.display = r ? "block" : "none"; document.getElementById("box-end").style.display = r ? "none" : "block"; }
-function enviar(){ if(!cart.length) return alert("Carrinho vazio!"); const n = document.getElementById("nome").value.trim(), e = document.getElementById("entrega").value, end = document.getElementById("end").value.trim(); if(!n) return alert("Digite seu nome."); if(e !== "Retirada na Loja" && !end) return alert("Digite endereço e CEP."); let m = `*PEDIDO - JCA Pesca & Bazar*\n*Cliente:* ${n}\n*Entrega:* ${e}\n` + (e !== "Retirada na Loja" ? `*Endereço:* ${end}\n` : "") + `*Pagamento:* ${document.getElementById("pag").value}\n\n`; cart.forEach(i => m += `• ${i.qtd}x ${i.nome} (Cód ${i.sku}) - R$ ${(i.preco*i.qtd).toFixed(2).replace(".",",")}\n`); m += `\n*TOTAL: R$ ${document.getElementById("total").innerText}*`; window.open("https://wa.me" + ZAP + "?text=" + encodeURIComponent(m), "_blank"); }
+  // ================= CONFIGURAÇÃO DA SUA LOJA =================
+  const NOME_LOJA = "JCA Pesca & Bazar";
+  const ID_PLANILHA = "1aqXlxsuLk8KuyuDr73IDyI1ZtfFqSFoIko9lYg1M2N4";
+  const WHATSAPP_LOJA = "5521967601536"; // TROQUE PELO SEU WHATSAPP (55 + 21 + NUMERO)
+  const ENDERECO_RETIRADA = "Retirada na Loja Física - São Gonçalo/RJ";
+  // ============================================================
 </script>
-</body>
-</html>
+
+<header>
+  <div class="topo">
+    <h1 id="titulo-loja">JCA Pesca & Bazar</h1>
+    <button class="btn-carrinho" onclick="abrirCarrinho()">🛒 Carrinho (<span id="qtd-total">0</span>)</button>
+  </div>
+</header>
+
+<div class="filtros">
+  <input type="text" id="busca" placeholder="Buscar produto por nome ou código..." oninput="filtrar()" />
+  <div class="categorias" id="lista-categorias"></div>
+</div>
+
+<div class="grid" id="vitrine"><p style="padding:20px;">Carregando produtos...</p></div>
+
+<div class="modal-bg" id="modal-carrinho">
+  <div class="modal">
+    <div>
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+        <h2>Seu Pedido</h2>
+        <button onclick="fecharCarrinho()" style="border:none; background:none; font-size:1.4rem; cursor:pointer;">✕</button>
+      </div>
+      <div id="itens-carrinho"></div>
+      <h3 style="margin-top:14px; text-align:right;">Total: R$ <span id="valor-total">0,00</span></h3>
+
+      <div class="campo">
+        <label>Seu Nome *</label>
+        <input type="text" id="cliente-nome" placeholder="Digite seu nome" />
+      </div>
+
+      <div class="campo">
+        <label>Como deseja receber? *</label>
+        <select id="tipo-entrega" onchange="alternarEndereco()">
+          <option value="Retirada na Loja">🏪 Retirar na Loja (Grátis)</option>
+          <option value="Entrega Local">🛵 Entrega Local / Motoboy</option>
+          <option value="Envio Correios/Transportadora">📦 Envio por Correios / Transportadora</option>
+        </select>
+      </div>
+
+      <div class="campo" id="box-retirada" style="background:#eef6ff; padding:10px; border-radius:6px; font-size:0.85rem;"></div>
+
+      <div class="campo" id="box-endereco" style="display:none;">
+        <label>Endereço Completo e CEP *</label>
+        <input type="text" id="cliente-endereco" placeholder="Rua, número, bairro, cidade e CEP" />
+      </div>
+
+      <div class="campo">
+        <label>Forma de Pagamento</label>
+        <select id="pagamento">
+          <option value="Pix">Pix</option>
+          <option value="Cartão na Entrega/Retirada">Cartão (Crédito/Débito)</option>
+          <option value="Dinheiro">Dinheiro</option>
+        </select>
+      </div>
+    </div>
+
+    <button class="btn-whats" onclick="enviarWhatsApp()">🚀 Enviar Pedido no WhatsApp</button>
+  </div>
+</div>
+
+<script>
+  document.getElementById("titulo-loja").innerText = NOME_LOJA;
+  document.getElementById("box-retirada").innerText = "📍 " + ENDERECO_RETIRADA;
+
+  let produtos = [];
+  let carrinho = [];
+  let catAtual = "Todos";
+  const FOTO_PADRAO = "data:image/svg+xml;utf8,<svg xmlns='http://w3.org' width='150' height='150' viewBox='0 0 24 24' fill='none' stroke='%23999' stroke-width='1.5'><rect x='3' y='3' width='18' height='18' rx='2'/><circle cx='8.5' cy='8.5' r='1.5'/><path d='M21 15l-5-5L5 21'/></svg>";
+
+  window.google = {
+    visualization: {
+      Query: {
+        setResponse: function(res) {
+          const rows = (res && res.table && res.table.rows) ? res.table.rows : [];
+          produtos = rows.map(r => {
+            const c = r.c || [];
+            const val = (i) => (c.at(i) && c.at(i).v !== null && c.at(i).v !== undefined) ? String(c.at(i).v).trim() : "";
+            const num = (i) => {
+              if (c.at(i) && typeof c.at(i).v === "number") return c.at(i).v;
+              return parseFloat(val(i).replace("R$", "").replace(/\./g, "").replace(",", ".").trim()) || 0;
+            };
+            return {
+              sku: val(0),
+              nome: val(1),
+              categoria: val(2) || "Geral",
+              preco: num(3),
+              foto: val(4).startsWith("http") ? val(4) : FOTO_PADRAO,
+              estoque: parseInt(num(5)) || 0
+            };
+          }).filter(p => p.nome && p.nome.toLowerCase() !== "nome" && p.estoque > 0);
+
+          gerarCategorias();
+          renderizar(produtos);
+        }
+      }
+    }
+  };
+
+  function carregarPlanilha() {
+    const dominio = ["https://", "docs.", "google.", "com/spreadsheets/d/"].join("");
+    const sufixo = "/gviz/tq?tqx=out:script&gid=0";
+    const script = document.createElement("script");
+    script.src = dominio + ID_PLANILHA + sufixo;
+    script.onerror = function() {
+      document.getElementById("vitrine").innerHTML = "<p style='padding:20px;'>Não foi possível conectar à planilha. Verifique se o compartilhamento está como 'Qualquer pessoa com o link'.</p>";
+    };
+    document.body.appendChild(script);
+  }
+
+  function gerarCategorias() {
+    const cats = ["Todos", ...new Set(produtos.map(p => p.categoria))];
+    const div = document.getElementById("lista-categorias");
+    div.innerHTML = cats.map(c => `<button class="cat-btn ${c === 'Todos' ? 'ativa' : ''}" onclick="selecionarCat('${c}', this)">${c}</button>`).join("");
+  }
+
+  function selecionarCat(cat, btn) {
+    catAtual = cat;
+    document.querySelectorAll(".cat-btn").forEach(b => b.classList.remove("ativa"));
+    btn.classList.add("ativa");
+    filtrar();
+  }
+
+  function filtrar() {
+    const termo = document.getElementById("busca").value.toLowerCase();
+    const filtrados = produtos.filter(p => {
+      const bateCat = catAtual === "Todos" || p.categoria === catAtual;
+      const bateTexto = p.nome.toLowerCase().includes(termo) || p.sku.toLowerCase().includes(termo);
+      return bateCat && bateTexto;
+    });
+    renderizar(filtrados);
+  }
+
+  function renderizar(lista) {
+    const vitrine = document.getElementById("vitrine");
+    if (!lista.length) {
+      vitrine.innerHTML = "<p style='padding:20px;'>Nenhum produto com estoque disponível encontrado.</p>";
+      return;
+    }
+    vitrine.innerHTML = lista.slice(0, 60).map(p => `
+      <div class="card">
+        <div>
+          <img src="${p.foto}" onerror="this.src='${FOTO_PADRAO}'" loading="lazy" />
+          <div class="sku">Cód: ${p.sku} | ${p.categoria}</div>
+          <div class="nome">${p.nome}</div>
+        </div>
+        <div>
