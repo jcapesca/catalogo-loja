@@ -40,7 +40,7 @@
   // ================= CONFIGURAÇÃO DA SUA LOJA =================
   const NOME_LOJA = "JCA Pesca & Bazar";
   const LINK_PLANILHA_CSV = "https://google.com";
-  const WHATSAPP_LOJA = "5521967601536"; // TROQUE PELO SEU WHATSAPP (55 + DDD + Numero)
+  const WHATSAPP_LOJA = "5521967601536"; // Coloque seu numero aqui (55 + DDD + Numero)
   const ENDERECO_RETIRADA = "Retirada na Loja Física - São Gonçalo/RJ";
   // ============================================================
 </script>
@@ -126,7 +126,7 @@
           nome: cols[1] || "",
           categoria: cols[2] || "Geral",
           preco: parseFloat(precoLimpo) || 0,
-          foto: cols[4] && cols[4].startsWith("http") ? cols[4] : FOTO_PADRAO,
+          foto: (cols[4] && cols[4].startsWith("http")) ? cols[4] : FOTO_PADRAO,
           estoque: parseInt(cols[5]) || 0
         };
       }).filter(p => p.nome && p.estoque > 0);
@@ -134,7 +134,7 @@
       gerarCategorias();
       renderizar(produtos);
     } catch (e) {
-      document.getElementById("vitrine").innerHTML = "<p>Erro ao carregar planilha.</p>";
+      document.getElementById("vitrine").innerHTML = "<p>Erro ao carregar planilha. Verifique o link CSV.</p>";
     }
   }
 
