@@ -111,7 +111,7 @@
   let catAtual = "Todos";
   const FOTO_PADRAO = "https://flaticon.com";
 
-  async function carregarProdutos() {
+    async function carregarProdutos() {
     try {
       const resp = await fetch(LINK_PLANILHA_CSV);
       const texto = await resp.text();
@@ -128,6 +128,7 @@
           estoque: parseInt(cols[5]) || 0
         };
       }).filter(p => p.nome && p.estoque > 0);
+    }).filter(p => p.nome && p.estoque > 0);
 
       gerarCategorias();
       renderizar(produtos);
