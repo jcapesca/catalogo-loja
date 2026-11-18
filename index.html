@@ -32,7 +32,7 @@
 
 <script>
   const NOME_LOJA = "JCA Pesca & Bazar";
-  const LINK_CSV = "https://docs.google.com/spreadsheets/d/1aqXlxsuLk8KuyuDr73IDyI1ZtfFqSFoIko9lYg1M2N4/edit?gid=0#gid=0";
+  const ID_PLANILHA = "COLE_O_ID_DA_SUA_PLANILHA_AQUI";
   const WHATSAPP = "5521999999999";
   const RETIRADA = "Retirada na Loja Física - São Gonçalo/RJ";
 </script>
@@ -84,30 +84,34 @@
   let produtos = [], carrinho = [], catAtual = "Todos";
   const SEM_FOTO = "https://flaticon.com";
 
-  async function iniciar() {
-    try {
-      const proxy = "https://allorigins.win" + encodeURIComponent(LINK_CSV);
-      const res = await fetch(proxy);
-      const txt = await res.text();
-      produtos = txt.split(/\r?\n/).slice(1).map(l => {
-        const c = l.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/).map(x => x.replace(/^"|"$/g, "").trim());
-        const p = (c.at(3) || "0").replace("R$", "").replace(/\./g, "").replace(",", ".").trim();
-        return {
-          sku: c.at(0) || "",
-          nome: c.at(1) || "",
-          cat: c.at(2) || "Geral",
-          preco: parseFloat(p) || 0,
-          foto: (c.at(4) && c.at(4).startsWith("http")) ? c.at(4) : SEM_FOTO,
-          est: parseInt(c.at(5)) || 0
-        };
-      }).filter(x => x.nome && x.est > 0);
+  window.google = { visualization: { Query: { setResponse: function(res) {
+    const rows = res.table.rows || [];
+    produtos = rows.map(r => {
+      const c = r.c || [];
+      const val = (i) => (c.at(i) && c.at(i).v !== null) ? String(c.at(i).v).trim() : "";
+      const num = (i) => (c.at(i) && typeof c.at(i).v === "number") ? c.at(i).v : parseFloat(val(i).replace("R$", "").replace(/\./g, "").replace(",", ".")) || 0;
+      return {
+        sku: val(0),
+        nome: val(1),
+        cat: val(2) || "Geral",
+        preco: num(3),
+        foto: val(4).startsWith("http") ? val(4) : SEM_FOTO,
+        est: parseInt(num(5)) || 0
+      };
+    }).filter(x => x.nome && x.nome.toLowerCase() !== "nome" && x.est > 0);
 
-      const listaCats = ["Todos", ...new Set(produtos.map(p => p.cat))];
-      document.getElementById("cats").innerHTML = listaCats.map(c => `<button class="cat-btn ${c==='Todos'?'ativa':''}" onclick="setCat('${c}',this)">${c}</button>`).join("");
-      desenhar(produtos);
-    } catch (e) {
-      document.getElementById("vitrine").innerHTML = "<p>Erro ao ler planilha: " + e.message + "</p>";
-    }
+    const listaCats = ["Todos", ...new Set(produtos.map(p => p.cat))];
+    document.getElementById("cats").innerHTML = listaCats.map(c => `<button class="cat-btn ${c==='Todos'?'ativa':''}" onclick="setCat('${c}',this)">${c}</button>`).join("");
+    desenhar(produtos);
+  }}}};
+
+  function carregarPlanilha() {
+    const s = document.createElement("script");
+    s.src = "https://google.com" + ID_PLANILHA + "/gviz/tq?tqx=out:json&gid=0";
+    s.onerror = () => {
+      document.getElementById("vitrine").innerHTML = "<p>Verifique o ID da planilha e se ela está como 'Qualquer pessoa com o link pode ver'.</p>";
+    };
+    document.body.appendChild(s);
   }
 
   function setCat(c, btn) {
@@ -182,7 +186,7 @@
     window.open(`https://wa.me{WHATSAPP}?text=${encodeURIComponent(msg)}`, "_blank");
   }
 
-  iniciar();
+  carregarPlanilha();
 </script>
 </body>
 </html>
