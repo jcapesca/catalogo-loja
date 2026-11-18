@@ -86,7 +86,8 @@
 
   async function iniciar() {
     try {
-      const res = await fetch(LINK_CSV);
+      const proxy = "https://allorigins.win" + encodeURIComponent(LINK_CSV);
+      const res = await fetch(proxy);
       const txt = await res.text();
       produtos = txt.split(/\r?\n/).slice(1).map(l => {
         const c = l.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/).map(x => x.replace(/^"|"$/g, "").trim());
