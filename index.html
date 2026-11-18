@@ -3,202 +3,185 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>JCA Pesca & Bazar - Catálogo Online</title>
+  <title>JCA Pesca & Bazar</title>
   <style>
-    :root { --primaria: #0f4c81; --secundaria: #1e88e5; --fundo: #f4f6f9; --texto: #222; }
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
-    body { background: var(--fundo); color: var(--texto); padding-bottom: 80px; }
-    header { background: var(--primaria); color: #fff; padding: 16px; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 6px rgba(0,0,0,0.15); }
-    .topo { max-width: 1100px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; gap: 10px; }
-    .topo h1 { font-size: 1.2rem; }
-    .btn-carrinho { background: #25d366; color: #fff; border: none; padding: 10px 14px; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 0.95rem; }
-    .filtros { max-width: 1100px; margin: 16px auto; padding: 0 16px; display: flex; flex-direction: column; gap: 10px; }
-    #busca { width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 8px; font-size: 1rem; }
-    .categorias { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 4px; }
-    .cat-btn { background: #fff; border: 1px solid #ddd; padding: 6px 14px; border-radius: 20px; cursor: pointer; white-space: nowrap; font-size: 0.9rem; }
-    .cat-btn.ativa { background: var(--primaria); color: #fff; border-color: var(--primaria); }
-    .grid { max-width: 1100px; margin: 0 auto; padding: 0 16px; display: grid; grid-template-columns: repeat(auto-fill, minmax(165px, 1fr)); gap: 14px; }
-    .card { background: #fff; border-radius: 10px; padding: 12px; box-shadow: 0 1px 4px rgba(0,0,0,0.08); display: flex; flex-direction: column; justify-content: space-between; }
-    .card img { width: 100%; height: 140px; object-fit: contain; border-radius: 6px; background: #fafafa; margin-bottom: 8px; }
-    .sku { font-size: 0.75rem; color: #777; }
-    .nome { font-size: 0.95rem; font-weight: 600; margin: 4px 0; line-height: 1.3; }
-    .preco { font-size: 1.1rem; font-weight: bold; color: var(--primaria); margin: 6px 0; }
-    .btn-add { width: 100%; background: var(--secundaria); color: #fff; border: none; padding: 9px; border-radius: 6px; font-weight: 600; cursor: pointer; }
-    .modal-bg { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 200; justify-content: flex-end; }
-    .modal { background: #fff; width: 100%; max-width: 420px; height: 100%; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; justify-content: space-between; }
-    .item-carrinho { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #eee; padding: 10px 0; gap: 8px; }
-    .qtd-ctrl button { width: 26px; height: 26px; border: 1px solid #ccc; background: #f9f9f9; border-radius: 4px; cursor: pointer; }
-    .campo { margin-top: 12px; }
-    .campo label { display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 4px; }
-    .campo input, .campo select { width: 100%; padding: 9px; border: 1px solid #ccc; border-radius: 6px; }
-    .btn-whats { width: 100%; background: #25d366; color: #fff; border: none; padding: 14px; border-radius: 8px; font-size: 1rem; font-weight: bold; cursor: pointer; margin-top: 16px; }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: sans-serif; }
+    body { background: #f4f6f9; color: #222; padding-bottom: 60px; }
+    header { background: #0f4c81; color: #fff; padding: 15px; position: sticky; top: 0; display: flex; justify-content: space-between; align-items: center; }
+    .btn-cart { background: #25d366; color: #fff; border: none; padding: 10px 14px; border-radius: 8px; font-weight: bold; cursor: pointer; }
+    .filtros { max-width: 1000px; margin: 15px auto; padding: 0 15px; }
+    #busca { width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 8px; margin-bottom: 10px; }
+    .cats { display: flex; gap: 8px; overflow-x: auto; }
+    .cat-btn { background: #fff; border: 1px solid #ddd; padding: 6px 14px; border-radius: 20px; cursor: pointer; }
+    .cat-btn.ativa { background: #0f4c81; color: #fff; }
+    .grid { max-width: 1000px; margin: 0 auto; padding: 0 15px; display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 12px; }
+    .card { background: #fff; border-radius: 10px; padding: 12px; box-shadow: 0 1px 4px rgba(0,0,0,0.1); display: flex; flex-direction: column; justify-content: space-between; }
+    .card img { width: 100%; height: 130px; object-fit: contain; margin-bottom: 8px; }
+    .preco { font-size: 1.1rem; font-weight: bold; color: #0f4c81; margin: 6px 0; }
+    .btn-add { width: 100%; background: #1e88e5; color: #fff; border: none; padding: 9px; border-radius: 6px; font-weight: bold; cursor: pointer; }
+    .modal-bg { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); justify-content: flex-end; }
+    .modal { background: #fff; width: 100%; max-width: 400px; height: 100%; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; justify-content: space-between; }
+    .item { display: flex; justify-content: space-between; border-bottom: 1px solid #eee; padding: 8px 0; }
+    .campo { margin-top: 10px; }
+    .campo label { display: block; font-size: 0.85rem; font-weight: bold; margin-bottom: 4px; }
+    .campo input, .campo select { width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 6px; }
+    .btn-whats { width: 100%; background: #25d366; color: #fff; border: none; padding: 14px; border-radius: 8px; font-size: 1rem; font-weight: bold; cursor: pointer; margin-top: 15px; }
   </style>
 </head>
 <body>
 
 <script>
   const NOME_LOJA = "JCA Pesca & Bazar";
-  const LINK_PLANILHA_CSV = "https://google.com";
-  const WHATSAPP_LOJA = "5521967601536";
-  const ENDERECO_RETIRADA = "Retirada na Loja Física - São Gonçalo/RJ";
+  const LINK_CSV = "https://google.com";
+  const WHATSAPP = "5521999999999";
+  const RETIRADA = "Retirada na Loja Física - São Gonçalo/RJ";
 </script>
 
 <header>
-  <div class="topo">
-    <h1 id="titulo-loja">JCA Pesca & Bazar</h1>
-    <button class="btn-carrinho" onclick="abrirCarrinho()">🛒 Carrinho (<span id="qtd-total">0</span>)</button>
-  </div>
+  <h2 id="titulo"></h2>
+  <button class="btn-cart" onclick="abrir()">🛒 Carrinho (<span id="qtd">0</span>)</button>
 </header>
 
 <div class="filtros">
-  <input type="text" id="busca" placeholder="Buscar produto por nome ou código..." oninput="filtrar()" />
-  <div class="categorias" id="lista-categorias"></div>
+  <input type="text" id="busca" placeholder="Buscar produto ou código..." oninput="filtrar()" />
+  <div class="cats" id="cats"></div>
 </div>
 
-<div class="grid" id="vitrine"><p style="padding:20px;">Carregando produtos...</p></div>
+<div class="grid" id="vitrine"><p>Carregando produtos...</p></div>
 
-<div class="modal-bg" id="modal-carrinho">
+<div class="modal-bg" id="modal">
   <div class="modal">
     <div>
-      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
-        <h2>Seu Pedido</h2>
-        <button onclick="fecharCarrinho()" style="border:none; background:none; font-size:1.4rem; cursor:pointer;">✕</button>
+      <div style="display:flex; justify-content:space-between; margin-bottom:10px;">
+        <h3>Seu Pedido</h3>
+        <button onclick="fechar()" style="border:none; background:none; font-size:1.3rem; cursor:pointer;">✕</button>
       </div>
-      <div id="itens-carrinho"></div>
-      <h3 style="margin-top:14px; text-align:right;">Total: R$ <span id="valor-total">0,00</span></h3>
-
+      <div id="itens"></div>
+      <h3 style="margin-top:12px; text-align:right;">Total: R$ <span id="total">0,00</span></h3>
+      <div class="campo"><label>Seu Nome *</label><input id="nome" /></div>
       <div class="campo">
-        <label>Seu Nome *</label>
-        <input type="text" id="cliente-nome" placeholder="Digite seu nome" />
-      </div>
-
-      <div class="campo">
-        <label>Como deseja receber? *</label>
-        <select id="tipo-entrega" onchange="alternarEndereco()">
+        <label>Recebimento *</label>
+        <select id="entrega" onchange="mudarEntrega()">
           <option value="Retirada na Loja">🏪 Retirar na Loja (Grátis)</option>
           <option value="Entrega Local">🛵 Entrega Local / Motoboy</option>
-          <option value="Envio Correios/Transportadora">📦 Envio por Correios / Transportadora</option>
+          <option value="Correios/Transportadora">📦 Correios / Transportadora</option>
         </select>
       </div>
-
-      <div class="campo" id="box-retirada" style="background:#eef6ff; padding:8px; border-radius:6px; font-size:0.85rem;"></div>
-
-      <div class="campo" id="box-endereco" style="display:none;">
-        <label>Endereço Completo e CEP *</label>
-        <input type="text" id="cliente-endereco" placeholder="Rua, número, bairro, cidade e CEP" />
-      </div>
-
+      <div class="campo" id="info-retirada" style="background:#eef6ff; padding:8px; border-radius:6px; font-size:0.85rem;"></div>
+      <div class="campo" id="box-end" style="display:none;"><label>Endereço e CEP *</label><input id="end" /></div>
       <div class="campo">
-        <label>Forma de Pagamento</label>
-        <select id="pagamento">
-          <option value="Pix">Pix</option>
-          <option value="Cartão na Entrega/Retirada">Cartão (Crédito/Débito)</option>
-          <option value="Dinheiro">Dinheiro</option>
-        </select>
+        <label>Pagamento</label>
+        <select id="pag"><option>Pix</option><option>Cartão</option><option>Dinheiro</option></select>
       </div>
     </div>
-
-    <button class="btn-whats" onclick="enviarWhatsApp()">🚀 Enviar Pedido no WhatsApp</button>
+    <button class="btn-whats" onclick="enviar()">🚀 Enviar no WhatsApp</button>
   </div>
 </div>
 
 <script>
-  document.getElementById("titulo-loja").innerText = NOME_LOJA;
-  document.getElementById("box-retirada").innerText = "📍 " + ENDERECO_RETIRADA;
+  document.getElementById("titulo").innerText = NOME_LOJA;
+  document.getElementById("info-retirada").innerText = "📍 " + RETIRADA;
+  let produtos = [], carrinho = [], catAtual = "Todos";
+  const SEM_FOTO = "https://flaticon.com";
 
-  let produtos = [];
-  let carrinho = [];
-  let catAtual = "Todos";
-  const FOTO_PADRAO = "https://flaticon.com";
-
-    async function carregarProdutos() {
+  async function iniciar() {
     try {
-      const resp = await fetch(LINK_PLANILHA_CSV);
-      const texto = await resp.text();
-      const linhas = texto.split(/\r?\n/).slice(1);
-      produtos = linhas.map(l => {
-        const cols = l.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/).map(c => c.replace(/^"|"$/g, "").trim());
-        const precoLimpo = (cols[3] || "0").replace("R$", "").replace(/\./g, "").replace(",", ".").trim();
+      const res = await fetch(LINK_CSV);
+      const txt = await res.text();
+      produtos = txt.split(/\r?\n/).slice(1).map(l => {
+        const c = l.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/).map(x => x.replace(/^"|"$/g, "").trim());
+        const p = (c.at(3) || "0").replace("R$", "").replace(/\./g, "").replace(",", ".").trim();
         return {
-          sku: cols[0] || "",
-          nome: cols[1] || "",
-          categoria: cols[2] || "Geral",
-          preco: parseFloat(precoLimpo) || 0,
-          foto: cols[4] && cols[4].startsWith("http") ? cols[4] : FOTO_PADRAO,
-          estoque: parseInt(cols[5]) || 0
+          sku: c.at(0) || "",
+          nome: c.at(1) || "",
+          cat: c.at(2) || "Geral",
+          preco: parseFloat(p) || 0,
+          foto: (c.at(4) && c.at(4).startsWith("http")) ? c.at(4) : SEM_FOTO,
+          est: parseInt(c.at(5)) || 0
         };
-      }).filter(p => p.nome && p.estoque > 0);
-    }).filter(p => p.nome && p.estoque > 0);
+      }).filter(x => x.nome && x.est > 0);
 
-      gerarCategorias();
-      renderizar(produtos);
+      const listaCats = ["Todos", ...new Set(produtos.map(p => p.cat))];
+      document.getElementById("cats").innerHTML = listaCats.map(c => `<button class="cat-btn ${c==='Todos'?'ativa':''}" onclick="setCat('${c}',this)">${c}</button>`).join("");
+      desenhar(produtos);
     } catch (e) {
-      document.getElementById("vitrine").innerHTML = "<p>Erro ao carregar planilha.</p>";
+      document.getElementById("vitrine").innerHTML = "<p>Erro ao ler planilha: " + e.message + "</p>";
     }
   }
 
-  function gerarCategorias() {
-    const cats = ["Todos", ...new Set(produtos.map(p => p.categoria))];
-    document.getElementById("lista-categorias").innerHTML = cats.map(c =>
-      `<button class="cat-btn ${c === 'Todos' ? 'ativa' : ''}" onclick="selecionarCat('${c}', this)">${c}</button>`
-    ).join("");
-  }
-
-  function selecionarCat(cat, btn) {
-    catAtual = cat;
+  function setCat(c, btn) {
+    catAtual = c;
     document.querySelectorAll(".cat-btn").forEach(b => b.classList.remove("ativa"));
     btn.classList.add("ativa");
     filtrar();
   }
 
   function filtrar() {
-    const termo = document.getElementById("busca").value.toLowerCase();
-    const filtrados = produtos.filter(p => {
-      const bateCat = catAtual === "Todos" || p.categoria === catAtual;
-      const bateTexto = p.nome.toLowerCase().includes(termo) || p.sku.toLowerCase().includes(termo);
-      return bateCat && bateTexto;
-    });
-    renderizar(filtrados);
+    const t = document.getElementById("busca").value.toLowerCase();
+    desenhar(produtos.filter(p => (catAtual === "Todos" || p.cat === catAtual) && (p.nome.toLowerCase().includes(t) || p.sku.includes(t))));
   }
 
-  function renderizar(lista) {
-    const vitrine = document.getElementById("vitrine");
-    if (!lista.length) { vitrine.innerHTML = "<p>Nenhum produto encontrado.</p>"; return; }
-    vitrine.innerHTML = lista.slice(0, 60).map(p => `
+  function desenhar(lista) {
+    document.getElementById("vitrine").innerHTML = lista.slice(0, 60).map(p => `
       <div class="card">
         <div>
-          <img src="${p.foto}" onerror="this.src='${FOTO_PADRAO}'" loading="lazy" />
-          <div class="sku">Cód: ${p.sku} | ${p.categoria}</div>
-          <div class="nome">${p.nome}</div>
+          <img src="${p.foto}" onerror="this.src='${SEM_FOTO}'" />
+          <small style="color:#777">Cód: ${p.sku}</small>
+          <div style="font-weight:bold; margin:4px 0">${p.nome}</div>
         </div>
         <div>
           <div class="preco">R$ ${p.preco.toFixed(2).replace(".", ",")}</div>
-          <button class="btn-add" onclick="adicionar('${p.sku}')">+ Adicionar</button>
+          <button class="btn-add" onclick="add('${p.sku}')">+ Adicionar</button>
         </div>
-      </div>
-    `).join("");
+      </div>`).join("") || "<p>Nenhum item com estoque encontrado.</p>";
   }
 
-  function adicionar(sku) {
-    const prod = produtos.find(p => p.sku === sku);
+  function add(sku) {
     const item = carrinho.find(i => i.sku === sku);
-    if (item) { item.qtd++; } else { carrinho.push({ ...prod, qtd: 1 }); }
-    atualizarCarrinho();
+    if (item) item.qtd++; else carrinho.push({ ...produtos.find(p => p.sku === sku), qtd: 1 });
+    atualizar();
   }
 
-  function alterarQtd(sku, delta) {
-    const idx = carrinho.findIndex(i => i.sku === sku);
-    if (idx > -1) {
-      carrinho[idx].qtd += delta;
-      if (carrinho[idx].qtd <= 0) carrinho.splice(idx, 1);
-    }
-    atualizarCarrinho();
+  function mudarQtd(sku, d) {
+    const i = carrinho.findIndex(x => x.sku === sku);
+    carrinho[i].qtd += d;
+    if (carrinho[i].qtd <= 0) carrinho.splice(i, 1);
+    atualizar();
   }
 
-  function atualizarCarrinho() {
-    document.getElementById("qtd-total").innerText = carrinho.reduce((s, i) => s + i.qtd, 0);
-    const total = carrinho.reduce((s, i) => s + (i.preco * i.qtd), 0);
-    document.getElementById("valor-total").innerText = total.toFixed(2).replace(".", ",");
-    document.getElementById("itens-carrinho").innerHTML = carrinho.length
-      ? carrinho.map(i => `
-        <div class="item-carrinho"></html>:
+  function atualizar() {
+    document.getElementById("qtd").innerText = carrinho.reduce((s, i) => s + i.qtd, 0);
+    const tot = carrinho.reduce((s, i) => s + i.preco * i.qtd, 0);
+    document.getElementById("total").innerText = tot.toFixed(2).replace(".", ",");
+    document.getElementById("itens").innerHTML = carrinho.map(i => `
+      <div class="item">
+        <div><b>${i.nome}</b><br>R$ ${(i.preco*i.qtd).toFixed(2).replace(".",",")}</div>
+        <div><button onclick="mudarQtd('${i.sku}',-1)">-</button> ${i.qtd} <button onclick="mudarQtd('${i.sku}',1)">+</button></div>
+      </div>`).join("") || "<p>Carrinho vazio.</p>";
+  }
+
+  function abrir() { document.getElementById("modal").style.display = "flex"; atualizar(); }
+  function fechar() { document.getElementById("modal").style.display = "none"; }
+  function mudarEntrega() {
+    const r = document.getElementById("entrega").value === "Retirada na Loja";
+    document.getElementById("info-retirada").style.display = r ? "block" : "none";
+    document.getElementById("box-end").style.display = r ? "none" : "block";
+  }
+
+  function enviar() {
+    if (!carrinho.length) return alert("Carrinho vazio!");
+    const nome = document.getElementById("nome").value.trim();
+    const ent = document.getElementById("entrega").value;
+    const end = document.getElementById("end").value.trim();
+    if (!nome) return alert("Digite seu nome.");
+    if (ent !== "Retirada na Loja" && !end) return alert("Digite endereço e CEP.");
+    let msg = `*PEDIDO - ${NOME_LOJA}*\n*Cliente:* ${nome}\n*Entrega:* ${ent}\n` + (ent !== "Retirada na Loja" ? `*Endereço:* ${end}\n` : "") + `*Pagamento:* ${document.getElementById("pag").value}\n\n`;
+    carrinho.forEach(i => msg += `• ${i.qtd}x ${i.nome} (Cód ${i.sku}) - R$ ${(i.preco*i.qtd).toFixed(2).replace(".",",")}\n`);
+    msg += `\n*TOTAL: R$ ${document.getElementById("total").innerText}*`;
+    window.open(`https://wa.me{WHATSAPP}?text=${encodeURIComponent(msg)}`, "_blank");
+  }
+
+  iniciar();
+</script>
+</body>
+</html>
