@@ -72,13 +72,11 @@
 
   <script>
     const API = "https://google.com" + "AKfycbyj-zKy2RvQVIapwJLtEsmv2xFnF4iSL10jNpdXHf_cENyM7NOwp-gKDa8282XPtrsp/exec";
-
     const ZAP = "5521967601536";
     let prods = [], cart = [], cat = "Todos";
     const IMG = "data:image/svg+xml;utf8,<svg xmlns='http://w3.org' width='120' height='120' viewBox='0 0 24 24' fill='none' stroke='%23999' stroke-width='1.5'><rect x='3' y='3' width='18' height='18' rx='2'/><circle cx='8.5' cy='8.5' r='1.5'/><path d='M21 15l-5-5L5 21'/></svg>";
 
-    fetch(API, { redirect: "follow" })
-
+    fetch(API)
       .then(r => r.json())
       .then(lista => {
         prods = lista.map(x => {
@@ -174,7 +172,7 @@
       let m = `*PEDIDO - JCA Pesca & Bazar*\n*Cliente:* ${n}\n*Entrega:* ${e}\n` + (e !== "Retirada na Loja" ? `*Endereço:* ${end}\n` : "") + `*Pagamento:* ${document.getElementById("pag").value}\n\n`;
       cart.forEach(i => m += `• ${i.qtd}x ${i.nome} (Cód ${i.sku}) - R$ ${(i.preco * i.qtd).toFixed(2).replace(".", ",")}\n`);
       m += `\n*TOTAL: R$ ${document.getElementById("total").innerText}*`;
-      const zapUrl = "https://whatsapp.com" + ZAP + "&text=" + encodeURIComponent(m);
+      const zapUrl = "https://whatsapp.com" + "send?phone=" + ZAP + "&text=" + encodeURIComponent(m);
       window.open(zapUrl, "_blank");
     }
   </script>
