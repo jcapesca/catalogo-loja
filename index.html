@@ -2,38 +2,46 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>JCA Pesca & Bazar</title>
   <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: sans-serif; }
-    body { background: #f4f6f9; padding-bottom: 60px; }
-    header { background: #0f4c81; color: #fff; padding: 15px; position: sticky; top: 0; z-index: 10; display: flex; justify-content: space-between; align-items: center; }
-    .btn-cart { background: #25d366; color: #fff; border: 0; padding: 10px 14px; border-radius: 8px; font-weight: bold; cursor: pointer; }
-    .filtros { max-width: 1000px; margin: 15px auto; padding: 0 15px; }
-    #busca { width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 8px; margin-bottom: 10px; }
-    .cats { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 4px; }
-    .cat-btn { background: #fff; border: 1px solid #ddd; padding: 6px 14px; border-radius: 20px; cursor: pointer; white-space: nowrap; }
-    .cat-btn.ativa { background: #0f4c81; color: #fff; }
-    .grid { max-width: 1000px; margin: 0 auto; padding: 0 15px; display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 12px; }
-    .card { background: #fff; border-radius: 10px; padding: 12px; box-shadow: 0 1px 4px rgba(0,0,0,.1); display: flex; flex-direction: column; justify-content: space-between; }
-    .card img { width: 100%; height: 120px; object-fit: contain; margin-bottom: 8px; }
-    .preco { font-size: 1.1rem; font-weight: bold; color: #0f4c81; margin: 6px 0; }
-    .btn-add { width: 100%; background: #1e88e5; color: #fff; border: 0; padding: 9px; border-radius: 6px; font-weight: bold; cursor: pointer; }
-    .modal-bg { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.5); z-index: 20; justify-content: flex-end; }
-    .modal { background: #fff; width: 100%; max-width: 400px; height: 100%; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; justify-content: space-between; }
-    .item { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #eee; padding: 8px 0; }
-    .item button { padding: 2px 8px; cursor: pointer; }
-    .campo { margin-top: 10px; }
-    .campo label { display: block; font-size: .85rem; font-weight: bold; margin-bottom: 4px; }
-    .campo input, .campo select { width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 6px; }
-    .btn-whats { width: 100%; background: #25d366; color: #fff; border: 0; padding: 14px; border-radius: 8px; font-size: 1rem; font-weight: bold; cursor: pointer; margin-top: 15px; }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+    body { background: #f4f6f9; color: #222; padding-bottom: 60px; }
+    header { background: #0f4c81; color: #fff; padding: 15px 20px; position: sticky; top: 0; z-index: 10; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 6px rgba(0,0,0,.15); }
+    header h2 { font-size: 1.25rem; }
+    .btn-cart { background: #25d366; color: #fff; border: 0; padding: 10px 16px; border-radius: 8px; font-weight: bold; font-size: .95rem; cursor: pointer; }
+    .filtros { max-width: 1000px; margin: 16px auto; padding: 0 15px; }
+    #busca { width: 100%; padding: 12px 14px; border: 1px solid #ccc; border-radius: 8px; font-size: 1rem; margin-bottom: 10px; }
+    .cats { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 6px; }
+    .cat-btn { background: #fff; border: 1px solid #ddd; padding: 7px 14px; border-radius: 20px; cursor: pointer; white-space: nowrap; font-size: .9rem; }
+    .cat-btn.ativa { background: #0f4c81; color: #fff; border-color: #0f4c81; font-weight: bold; }
+    .grid { max-width: 1000px; margin: 0 auto; padding: 0 15px; display: grid; grid-template-columns: repeat(auto-fill, minmax(165px, 1fr)); gap: 14px; }
+    .card { background: #fff; border-radius: 10px; padding: 12px; box-shadow: 0 1px 4px rgba(0,0,0,.08); display: flex; flex-direction: column; justify-content: space-between; }
+    .card img { width: 100%; height: 130px; object-fit: contain; margin-bottom: 8px; background: #fafafa; border-radius: 6px; }
+    .sku-tag { color: #777; font-size: .78rem; }
+    .prod-nome { font-weight: bold; font-size: .95rem; margin: 4px 0 8px; line-height: 1.3; }
+    .preco { font-size: 1.15rem; font-weight: bold; color: #0f4c81; margin-bottom: 8px; }
+    .btn-add { width: 100%; background: #1e88e5; color: #fff; border: 0; padding: 10px; border-radius: 6px; font-weight: bold; cursor: pointer; }
+    .btn-add:active { background: #1565c0; }
+    .modal-bg { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.55); z-index: 20; justify-content: flex-end; }
+    .modal { background: #fff; width: 100%; max-width: 420px; height: 100%; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; justify-content: space-between; }
+    .modal-topo { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #eee; padding-bottom: 10px; margin-bottom: 10px; }
+    .item { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #eee; padding: 10px 0; gap: 10px; }
+    .qtd-ctrl { display: flex; align-items: center; gap: 8px; }
+    .qtd-ctrl button { width: 28px; height: 28px; border: 1px solid #ccc; background: #f8f9fa; border-radius: 6px; font-weight: bold; cursor: pointer; }
+    .campo { margin-top: 12px; }
+    .campo label { display: block; font-size: .85rem; font-weight: bold; margin-bottom: 4px; color: #333; }
+    .campo input, .campo select { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px; font-size: .95rem; }
+    .btn-whats { width: 100%; background: #25d366; color: #fff; border: 0; padding: 15px; border-radius: 8px; font-size: 1.05rem; font-weight: bold; cursor: pointer; margin-top: 18px; }
     .btn-whats:disabled { background: #95d5b2; cursor: not-allowed; }
+    .aviso-box { grid-column: 1 / -1; background: #fff; padding: 20px; border-radius: 10px; text-align: center; box-shadow: 0 1px 4px rgba(0,0,0,.08); }
   </style>
 </head>
 <body>
+
   <header>
     <h2>JCA Pesca & Bazar</h2>
-    <button class="btn-cart" onclick="abrir()">🛒 Carrinho (<span id="qtd">0</span>)</button>
+    <button class="btn-cart" onclick="abrirCarrinho()">🛒 Carrinho (<span id="qtd">0</span>)</button>
   </header>
 
   <div class="filtros">
@@ -41,155 +49,145 @@
     <div class="cats" id="cats"></div>
   </div>
 
-  <div class="grid" id="vitrine"><p>Carregando produtos...</p></div>
+  <div class="grid" id="vitrine">
+    <div class="aviso-box">Carregando produtos da loja...</div>
+  </div>
 
-  <div class="modal-bg" id="modal">
+  <div class="modal-bg" id="modal" onclick="if(event.target===this) fecharCarrinho()">
     <div class="modal">
       <div>
-        <div style="display:flex;justify-content:space-between;margin-bottom:10px">
+        <div class="modal-topo">
           <h3>Seu Pedido</h3>
-          <button onclick="fechar()" style="border:0;background:none;font-size:1.3rem;cursor:pointer">✕</button>
+          <button onclick="fecharCarrinho()" style="border:0;background:none;font-size:1.4rem;cursor:pointer">✕</button>
         </div>
         <div id="itens"></div>
-        <h3 style="margin-top:12px;text-align:right">Total: R$ <span id="total">0,00</span></h3>
-        <div class="campo"><label>Seu Nome *</label><input type="text" id="nome" placeholder="Digite seu nome"></div>
+        <h3 style="margin-top:14px;text-align:right;color:#0f4c81">Total: R$ <span id="total">0,00</span></h3>
+
         <div class="campo">
-          <label>Recebimento *</label>
-          <select id="entrega" onchange="mudarEnt()">
+          <label>Seu Nome *</label>
+          <input type="text" id="nome" placeholder="Digite seu nome">
+        </div>
+
+        <div class="campo">
+          <label>Forma de Recebimento *</label>
+          <select id="entrega" onchange="alternarEntrega()">
             <option value="Retirada na Loja">🏪 Retirar na Loja (Grátis)</option>
             <option value="Entrega Local">🛵 Entrega Local / Motoboy</option>
             <option value="Correios/Transportadora">📦 Correios / Transportadora</option>
           </select>
         </div>
-        <div class="campo" id="info-ret" style="background:#eef6ff;padding:8px;border-radius:6px;font-size:.85rem">📍 Retirada na Loja Física - São Gonçalo/RJ</div>
-        <div class="campo" id="box-end" style="display:none"><label>Endereço e CEP *</label><input type="text" id="end" placeholder="Rua, número, bairro, cidade e CEP"></div>
+
+        <div class="campo" id="info-ret" style="background:#eef6ff;padding:10px;border-radius:6px;font-size:.85rem;color:#0f4c81">
+          📍 Retirada na Loja Física - São Gonçalo/RJ
+        </div>
+
+        <div class="campo" id="box-end" style="display:none">
+          <label>Endereço Completo e CEP *</label>
+          <input type="text" id="end" placeholder="Rua, número, bairro, cidade e CEP">
+        </div>
+
         <div class="campo">
-          <label>Pagamento</label>
-          <select id="pag"><option>Pix</option><option>Cartão</option><option>Dinheiro</option></select>
+          <label>Forma de Pagamento</label>
+          <select id="pag">
+            <option value="Pix">Pix</option>
+            <option value="Cartão">Cartão</option>
+            <option value="Dinheiro">Dinheiro</option>
+          </select>
         </div>
       </div>
-      <button class="btn-whats" id="btn-enviar" onclick="enviar()">🚀 Enviar no WhatsApp</button>
+
+      <button class="btn-whats" id="btn-enviar" onclick="enviarPedido()">🚀 Enviar Pedido no WhatsApp</button>
     </div>
   </div>
 
   <script>
-    const API = "https://script.google.com/macros/s/AKfycbww9QD-r_U8nLglg0p5WzHHiXSr1VG_0fUylTXWCTgCUmXAFCI1RlzRjHRvze2Mxl6A/exec";
+    const API = "https://google.com";
     const ZAP = "5521967601536";
-    let prods = [], cart = [], cat = "Todos";
-    const IMG = "data:image/svg+xml;utf8,<svg xmlns='http://w3.org' width='120' height='120' viewBox='0 0 24 24' fill='none' stroke='%23999' stroke-width='1.5'><rect x='3' y='3' width='18' height='18' rx='2'/><circle cx='8.5' cy='8.5' r='1.5'/><path d='M21 15l-5-5L5 21'/></svg>";
+    const SEM_FOTO = "data:image/svg+xml;utf8,<svg xmlns='http://w3.org' width='120' height='120' viewBox='0 0 24 24' fill='none' stroke='%23aaa' stroke-width='1.5'><rect x='3' y='3' width='18' height='18' rx='2'/><circle cx='8.5' cy='8.5' r='1.5'/><path d='M21 15l-5-5L5 21'/></svg>";
 
-    fetch(API)
-      .then(r => r.json())
-      .then(lista => {
+    let prods = [];
+    let cart = [];
+    let catAtual = "Todos";
+
+    async function iniciar() {
+      const vitrine = document.getElementById("vitrine");
+      try {
+        const resp = await fetch(API, { method: "GET", redirect: "follow" });
+        if (!resp.ok) throw new Error("Servidor respondeu com status " + resp.status);
+
+        const texto = await resp.text();
+        let lista;
+        try {
+          lista = JSON.parse(texto);
+        } catch (e) {
+          throw new Error("O Google retornou HTML em vez de lista. Verifique se a implantação está como 'Qualquer pessoa'.");
+        }
+
+        if (!Array.isArray(lista)) {
+          throw new Error("Formato de dados inválido recebido da planilha.");
+        }
+
         prods = lista.map(x => {
-          const p = typeof x.preco === "number" ? x.preco : parseFloat(String(x.preco || "0").replace("R$", "").replace(/\./g, "").replace(",", ".")) || 0;
+          const precoLimpo = typeof x.preco === "number"
+            ? x.preco
+            : parseFloat(String(x.preco || "0").replace("R$", "").replace(/\./g, "").replace(",", ".")) || 0;
+
           return {
             sku: String(x.sku || ""),
-            nome: String(x.nome || ""),
-            cat: String(x.categoria || "Geral"),
-            preco: p,
-            foto: String(x.foto || "").startsWith("http") ? x.foto : IMG,
-            est: parseInt(x.estoque) || 0
+            nome: String(x.nome || "").trim(),
+            cat: String(x.categoria || "Geral").trim(),
+            preco: precoLimpo,
+            foto: String(x.foto || "").trim().startsWith("http") ? String(x.foto).trim() : SEM_FOTO,
+            est: parseInt(x.estoque, 10) || 0
           };
-        }).filter(p => p.nome && p.est > 0);
-        document.getElementById("cats").innerHTML = ["Todos", ...new Set(prods.map(p => p.cat))].map(c => `<button class="cat-btn ${c === 'Todos' ? 'ativa' : ''}" onclick="setCat('${c}',this)">${c}</button>`).join("");
-        desenhar(prods);
-      })
-      .catch(e => {
-        document.getElementById("vitrine").innerHTML = "<p>Erro ao carregar produtos: " + e.message + "</p>";
-      });
+        }).filter(p => p.nome !== "" && p.est > 0);
 
-    function setCat(c, b) {
-      cat = c;
-      document.querySelectorAll(".cat-btn").forEach(x => x.classList.remove("ativa"));
-      b.classList.add("ativa");
+        montarCategorias();
+        desenharVitrine(prods);
+      } catch (erro) {
+        vitrine.innerHTML = `<div class="aviso-box" style="color:#b00020">
+          <b>Não foi possível carregar os produtos:</b><br>${erro.message}<br><br>
+          <button onclick="iniciar()" style="padding:8px 16px;cursor:pointer">Tentar novamente</button>
+        </div>`;
+      }
+    }
+
+    function montarCategorias() {
+      const unicas = ["Todos", ...new Set(prods.map(p => p.cat))];
+      document.getElementById("cats").innerHTML = unicas.map(c =>
+        `<button class="cat-btn ${c === 'Todos' ? 'ativa' : ''}" onclick="selecionarCat('${c.replace(/'/g, "\\'")}', this)">${c}</button>`
+      ).join("");
+    }
+
+    function selecionarCat(c, btn) {
+      catAtual = c;
+      document.querySelectorAll(".cat-btn").forEach(b => b.classList.remove("ativa"));
+      btn.classList.add("ativa");
       filtrar();
     }
 
     function filtrar() {
-      const t = document.getElementById("busca").value.toLowerCase();
-      desenhar(prods.filter(p => (cat === "Todos" || p.cat === cat) && (p.nome.toLowerCase().includes(t) || p.sku.toLowerCase().includes(t))));
+      const termo = document.getElementById("busca").value.toLowerCase().trim();
+      const filtrados = prods.filter(p => {
+        const bateCat = catAtual === "Todos" || p.cat === catAtual;
+        const bateBusca = p.nome.toLowerCase().includes(termo) || p.sku.toLowerCase().includes(termo);
+        return bateCat && bateBusca;
+      });
+      desenharVitrine(filtrados);
     }
 
-    function desenhar(l) {
-      document.getElementById("vitrine").innerHTML = l.slice(0, 60).map(p => `
+    function desenharVitrine(lista) {
+      const vitrine = document.getElementById("vitrine");
+      if (lista.length === 0) {
+        vitrine.innerHTML = `<div class="aviso-box">Nenhum produto encontrado.</div>`;
+        return;
+      }
+      vitrine.innerHTML = lista.slice(0, 80).map(p => `
         <div class="card">
           <div>
-            <img src="${p.foto}" onerror="this.src='${IMG}'">
-            <small style="color:#777">Cód: ${p.sku}</small>
-            <div style="font-weight:bold;margin:4px 0">${p.nome}</div>
+            <img src="${p.foto}" alt="${p.nome}" loading="lazy" onerror="this.onerror=null;this.src='${SEM_FOTO}'">
+            <div class="sku-tag">Cód: ${p.sku}</div>
+            <div class="prod-nome">${p.nome}</div>
           </div>
           <div>
             <div class="preco">R$ ${p.preco.toFixed(2).replace(".", ",")}</div>
-            <button class="btn-add" onclick="add('${p.sku}')">+ Adicionar</button>
-          </div>
-        </div>
-      `).join("") || "<p>Nenhum item encontrado.</p>";
-    }
-
-    function add(sku) {
-      const i = cart.find(x => x.sku === sku);
-      if (i) {
-        if (i.qtd < i.est) i.qtd++;
-        else alert("Estoque máximo atingido para este item.");
-      } else {
-        cart.push({ ...prods.find(x => x.sku === sku), qtd: 1 });
-      }
-      att();
-    }
-
-    function mQtd(sku, d) {
-      const i = cart.findIndex(x => x.sku === sku);
-      if (i === -1) return;
-      const novaQtd = cart[i].qtd + d;
-      if (novaQtd > cart[i].est) {
-        alert("Estoque máximo atingido.");
-        return;
-      }
-      cart[i].qtd = novaQtd;
-      if (cart[i].qtd <= 0) cart.splice(i, 1);
-      att();
-    }
-
-    function att() {
-      document.getElementById("qtd").innerText = cart.reduce((s, i) => s + i.qtd, 0);
-      document.getElementById("total").innerText = cart.reduce((s, i) => s + i.preco * i.qtd, 0).toFixed(2).replace(".", ",");
-      document.getElementById("itens").innerHTML = cart.map(i => `
-        <div class="item">
-          <div><b>${i.nome}</b><br>R$ ${(i.preco * i.qtd).toFixed(2).replace(".", ",")}</div>
-          <div>
-            <button onclick="mQtd('${i.sku}',-1)">-</button>
-            <span style="margin:0 6px">${i.qtd}</span>
-            <button onclick="mQtd('${i.sku}',1)">+</button>
-          </div>
-        </div>
-      `).join("") || "<p>Carrinho vazio.</p>";
-    }
-
-    function abrir() { document.getElementById("modal").style.display = "flex"; att(); }
-    function fechar() { document.getElementById("modal").style.display = "none"; }
-
-    function mudarEnt() {
-      const ent = document.getElementById("entrega").value;
-      const isRetirada = ent === "Retirada na Loja";
-      document.getElementById("info-ret").style.display = isRetirada ? "block" : "none";
-      document.getElementById("box-end").style.display = isRetirada ? "none" : "block";
-    }
-
-    function enviar() {
-      if (cart.length === 0) return alert("Seu carrinho está vazio!");
-
-      const nome = document.getElementById("nome").value.trim();
-      const entrega = document.getElementById("entrega").value;
-      const end = document.getElementById("end").value.trim();
-      const pag = document.getElementById("pag").value;
-
-      if (!nome) return alert("Por favor, informe seu nome.");
-      if (entrega !== "Retirada na Loja" && !end) return alert("Por favor, informe o endereço e CEP para entrega.");
-
-      const totalNum = cart.reduce((s, i) => s + i.preco * i.qtd, 0);
-      const totalFormatado = totalNum.toFixed(2).replace(".", ",");
-
-      let texto = `*NOVO PEDIDO - JCA PESCA & BAZAR*\n\n`;
-      texto += `*Cliente:* ${nome}\n`;
-      texto += `*Recebimento:* ${entrega}\n`;
