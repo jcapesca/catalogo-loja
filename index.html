@@ -153,3 +153,6 @@
       try {
         fetch(API, { method: "POST", mode: "no-cors", keepalive: true, headers: { "Content-Type": "text/plain;charset=utf-8" }, body: JSON.stringify({ cliente: nome, entrega, endereco: end, pagamento: pag, total: totalNum, itens: cart.map(i => ({ sku: i.sku, nome: i.nome, qtd: i.qtd, preco: i.preco })) }) });
       } catch (e) {}
+  </script>
+</body>
+</html>
