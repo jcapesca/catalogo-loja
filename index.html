@@ -27,7 +27,6 @@
     .campo label { display: block; font-size: .85rem; font-weight: bold; margin-bottom: 4px; }
     .campo input, .campo select { width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 6px; }
     .btn-whats { width: 100%; background: #25d366; color: #fff; border: 0; padding: 14px; border-radius: 8px; font-size: 1rem; font-weight: bold; cursor: pointer; margin-top: 15px; }
-    .btn-whats:disabled { background: #95d5b2; cursor: not-allowed; }
   </style>
 </head>
 <body>
@@ -35,14 +34,11 @@
     <h2>JCA Pesca & Bazar</h2>
     <button class="btn-cart" onclick="abrir()">🛒 Carrinho (<span id="qtd">0</span>)</button>
   </header>
-
   <div class="filtros">
     <input type="text" id="busca" placeholder="Buscar produto ou código..." oninput="filtrar()">
     <div class="cats" id="cats"></div>
   </div>
-
-  <div class="grid" id="vitrine"><p>Conectando com a planilha...</p></div>
-
+  <div class="grid" id="vitrine"><p>Iniciando catálogo...</p></div>
   <div class="modal-bg" id="modal">
     <div class="modal">
       <div>
@@ -71,44 +67,29 @@
       <button class="btn-whats" id="btn-enviar" onclick="enviar()">🚀 Enviar no WhatsApp</button>
     </div>
   </div>
-
   <script>
     const API = "https://google.com";
     const ZAP = "5521967601536";
     let prods = [], cart = [], cat = "Todos";
     const IMG = "data:image/svg+xml;utf8,<svg xmlns='http://w3.org' width='120' height='120' viewBox='0 0 24 24' fill='none' stroke='%23999' stroke-width='1.5'><rect x='3' y='3' width='18' height='18' rx='2'/><circle cx='8.5' cy='8.5' r='1.5'/><path d='M21 15l-5-5L5 21'/></svg>";
 
-    function carregar() {
-      const vitrine = document.getElementById("vitrine");
-      vitrine.innerHTML = "<p>Buscando itens na planilha...</p>";
-
-      fetch(API)
-        .then(r => {
-          if (!r.ok) throw new Error("HTTP " + r.status);
-          return r.json();
-        })
-        .then(lista => {
-          prods = lista.map(x => {
-            const p = typeof x.preco === "number" ? x.preco : parseFloat(String(x.preco || "0").replace("R$", "").replace(/\./g, "").replace(",", ".")) || 0;
-            return {
-              sku: String(x.sku || ""),
-              nome: String(x.nome || ""),
-              cat: String(x.categoria || "Geral"),
-              preco: p,
-              foto: String(x.foto || "").startsWith("http") ? x.foto : IMG,
-              est: parseInt(x.estoque) || 0
-            };
-          }).filter(p => p.nome && p.est > 0);
-
-          document.getElementById("cats").innerHTML = ["Todos", ...new Set(prods.map(p => p.cat))]
-            .map(c => `<button class="cat-btn ${c === 'Todos' ? 'ativa' : ''}" onclick="setCat('${c}',this)">${c}</button>`)
-            .join("");
-          desenhar(prods);
-        })
-        .catch(e => {
-          vitrine.innerHTML = `<div style="grid-column:1/-1;background:#fff;padding:15px;border-radius:8px;border-left:4px solid #d32f2f"><b>Erro de conexão:</b> ${e.message}</div>`;
-        });
-    }
+    fetch(API)
+      .then(r => r.json())
+      .then(lista => {
+        prods = lista.map(x => ({
+          sku: String(x.sku || ""),
+          nome: String(x.nome || ""),
+          cat: String(x.categoria || "Geral"),
+          preco: typeof x.preco === "number" ? x.preco : parseFloat(String(x.preco || "0").replace("R$", "").replace(/\./g, "").replace(",", ".")) || 0,
+          foto: String(x.foto || "").startsWith("http") ? x.foto : IMG,
+          est: parseInt(x.estoque) || 0
+        })).filter(p => p.nome && p.est > 0);
+        document.getElementById("cats").innerHTML = ["Todos", ...new Set(prods.map(p => p.cat))].map(c => `<button class="cat-btn ${c === 'Todos' ? 'ativa' : ''}" onclick="setCat('${c}',this)">${c}</button>`).join("");
+        desenhar(prods);
+      })
+      .catch(e => {
+        document.getElementById("vitrine").innerHTML = "<p style='color:red'>Erro: " + e.message + "</p>";
+      });
 
     function setCat(c, b) {
       cat = c;
@@ -116,83 +97,59 @@
       b.classList.add("ativa");
       filtrar();
     }
-
     function filtrar() {
       const t = document.getElementById("busca").value.toLowerCase();
       desenhar(prods.filter(p => (cat === "Todos" || p.cat === cat) && (p.nome.toLowerCase().includes(t) || p.sku.toLowerCase().includes(t))));
     }
-
     function desenhar(l) {
       document.getElementById("vitrine").innerHTML = l.slice(0, 60).map(p => `
         <div class="card">
-          <div>
-            <img src="${p.foto}" onerror="this.src='${IMG}'">
-            <small style="color:#777">Cód: ${p.sku}</small>
-            <div style="font-weight:bold;margin:4px 0">${p.nome}</div>
-          </div>
-          <div>
-            <div class="preco">R$ ${p.preco.toFixed(2).replace(".", ",")}</div>
-            <button class="btn-add" onclick="add('${p.sku}')">+ Adicionar</button>
-          </div>
-        </div>
-      `).join("") || "<p>Nenhum item encontrado.</p>";
+          <div><img src="${p.foto}" onerror="this.src='${IMG}'"><small style="color:#777">Cód: ${p.sku}</small><div style="font-weight:bold;margin:4px 0">${p.nome}</div></div>
+          <div><div class="preco">R$ ${p.preco.toFixed(2).replace(".", ",")}</div><button class="btn-add" onclick="add('${p.sku}')">+ Adicionar</button></div>
+        </div>`).join("") || "<p>Nenhum item encontrado.</p>";
     }
-
     function add(sku) {
       const i = cart.find(x => x.sku === sku);
-      if (i) {
-        if (i.qtd < i.est) i.qtd++;
-        else alert("Estoque máximo atingido para este item.");
-      } else {
-        cart.push({ ...prods.find(x => x.sku === sku), qtd: 1 });
-      }
+      if (i) { if (i.qtd < i.est) i.qtd++; else alert("Estoque máximo atingido."); }
+      else cart.push({ ...prods.find(x => x.sku === sku), qtd: 1 });
       att();
     }
-
     function mQtd(sku, d) {
       const i = cart.findIndex(x => x.sku === sku);
       if (i === -1) return;
-      const novaQtd = cart[i].qtd + d;
-      if (novaQtd > cart[i].est) {
-        alert("Estoque máximo atingido.");
-        return;
-      }
-      cart[i].qtd = novaQtd;
+      if (cart[i].qtd + d > cart[i].est) return alert("Estoque máximo atingido.");
+      cart[i].qtd += d;
       if (cart[i].qtd <= 0) cart.splice(i, 1);
       att();
     }
-
     function att() {
       document.getElementById("qtd").innerText = cart.reduce((s, i) => s + i.qtd, 0);
       document.getElementById("total").innerText = cart.reduce((s, i) => s + i.preco * i.qtd, 0).toFixed(2).replace(".", ",");
       document.getElementById("itens").innerHTML = cart.map(i => `
-        <div class="item">
-          <div><b>${i.nome}</b><br>R$ ${(i.preco * i.qtd).toFixed(2).replace(".", ",")}</div>
-          <div>
-            <button onclick="mQtd('${i.sku}',-1)">-</button>
-            <span style="margin:0 6px">${i.qtd}</span>
-            <button onclick="mQtd('${i.sku}',1)">+</button>
-          </div>
-        </div>
-      `).join("") || "<p>Carrinho vazio.</p>";
+        <div class="item"><div><b>${i.nome}</b><br>R$ ${(i.preco * i.qtd).toFixed(2).replace(".", ",")}</div>
+        <div><button onclick="mQtd('${i.sku}',-1)">-</button> ${i.qtd} <button onclick="mQtd('${i.sku}',1)">+</button></div></div>`).join("") || "<p>Carrinho vazio.</p>";
     }
-
     function abrir() { document.getElementById("modal").style.display = "flex"; att(); }
     function fechar() { document.getElementById("modal").style.display = "none"; }
-
     function mudarEnt() {
-      const ent = document.getElementById("entrega").value;
-      const isRetirada = ent === "Retirada na Loja";
-      document.getElementById("info-ret").style.display = isRetirada ? "block" : "none";
-      document.getElementById("box-end").style.display = isRetirada ? "none" : "block";
+      const r = document.getElementById("entrega").value === "Retirada na Loja";
+      document.getElementById("info-ret").style.display = r ? "block" : "none";
+      document.getElementById("box-end").style.display = r ? "none" : "block";
     }
-
     function enviar() {
-      if (cart.length === 0) return alert("Seu carrinho está vazio!");
-
+      if (!cart.length) return alert("Seu carrinho está vazio!");
       const nome = document.getElementById("nome").value.trim();
       const entrega = document.getElementById("entrega").value;
       const end = document.getElementById("end").value.trim();
       const pag = document.getElementById("pag").value;
-
-      if (!nome) return alert("Por favor, informe seu nome.");
+      if (!nome) return alert("Informe seu nome.");
+      if (entrega !== "Retirada na Loja" && !end) return alert("Informe o endereço e CEP.");
+      const totalNum = cart.reduce((s, i) => s + i.preco * i.qtd, 0);
+      let texto = `*NOVO PEDIDO - JCA PESCA & BAZAR*\n\n*Cliente:* ${nome}\n*Recebimento:* ${entrega}\n`;
+      if (entrega !== "Retirada na Loja") texto += `*Endereço:* ${end}\n`;
+      texto += `*Pagamento:* ${pag}\n\n*Itens do Pedido:*\n`;
+      cart.forEach(i => { texto += `• ${i.qtd}x ${i.nome} (Cód: ${i.sku}) - R$ ${(i.preco * i.qtd).toFixed(2).replace(".", ",")}\n`; });
+      texto += `\n*Total: R$ ${totalNum.toFixed(2).replace(".", ",")}*`;
+      try {
+        fetch(API, { method: "POST", mode: "no-cors", keepalive: true, headers: { "Content-Type": "text/plain;charset=utf-8" }, body: JSON.stringify({ cliente: nome, entrega, endereco: end, pagamento: pag, total: totalNum, itens: cart.map(i => ({ sku: i.sku, nome: i.nome, qtd: i.qtd, preco: i.preco })) }) });
+      } catch (e) {}
