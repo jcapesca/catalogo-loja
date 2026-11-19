@@ -73,7 +73,7 @@
   </div>
 
   <script>
-    const API = "https://google.com";
+    const API = "https://script.google.com/macros/s/AKfycbww9QD-r_U8nLglg0p5WzHHiXSr1VG_0fUylTXWCTgCUmXAFCI1RlzRjHRvze2Mxl6A/exec";
     const ZAP = "5521967601536";
     let prods = [], cart = [], cat = "Todos";
     const IMG = "data:image/svg+xml;utf8,<svg xmlns='http://w3.org' width='120' height='120' viewBox='0 0 24 24' fill='none' stroke='%23999' stroke-width='1.5'><rect x='3' y='3' width='18' height='18' rx='2'/><circle cx='8.5' cy='8.5' r='1.5'/><path d='M21 15l-5-5L5 21'/></svg>";
@@ -190,6 +190,6 @@
       const totalNum = cart.reduce((s, i) => s + i.preco * i.qtd, 0);
       const totalFormatado = totalNum.toFixed(2).replace(".", ",");
 
-      // Monta a mensagem formatada para o WhatsApp
       let texto = `*NOVO PEDIDO - JCA PESCA & BAZAR*\n\n`;
       texto += `*Cliente:* ${nome}\n`;
+      texto += `*Recebimento:* ${entrega}\n`;
