@@ -34,8 +34,7 @@ header{background:#0f4c81;color:#fff;padding:15px;position:sticky;top:0;z-index:
 <div class="campo"><label>Pagamento</label><select id="pag"><option>Pix</option><option>Cartão</option><option>Dinheiro</option></select></div>
 </div><button class="btn-whats" onclick="enviar()">🚀 Enviar no WhatsApp</button></div></div>
 <script>
-const API = "https://script.google.com/macros/s/AKfycbyj-zKy2RvQVIapwJLtEsmv2xFnF4iSL10jNpdXHf_cENyM7NOwp-gKDa8282XPtrsp/exec";
-
+const API = "https://google.com";
 const ZAP = "5521967601536";
 let prods = [], cart = [], cat = "Todos";
 const IMG = "data:image/svg+xml;utf8,<svg xmlns='http://w3.org' width='120' height='120' viewBox='0 0 24 24' fill='none' stroke='%23999' stroke-width='1.5'><rect x='3' y='3' width='18' height='18' rx='2'/><circle cx='8.5' cy='8.5' r='1.5'/><path d='M21 15l-5-5L5 21'/></svg>";
@@ -58,8 +57,7 @@ function att(){ document.getElementById("qtd").innerText = cart.reduce((s,i)=>s+
 function abrir(){ document.getElementById("modal").style.display = "flex"; att(); }
 function fechar(){ document.getElementById("modal").style.display = "none"; }
 function mudarEnt(){ const r = document.getElementById("entrega").value === "Retirada na Loja"; document.getElementById("info-ret").style.display = r ? "block" : "none"; document.getElementById("box-end").style.display = r ? "none" : "block"; }
-function enviar(){ if(!cart.length) return alert("Carrinho vazio!"); const n = document.getElementById("nome").value.trim(), e = document.getElementById("entrega").value, end = document.getElementById("end").value.trim(); if(!n) return alert("Digite seu nome."); if(e !== "Retirada na Loja" && !end) return alert("Digite endereço e CEP."); let m = `*PEDIDO - JCA Pesca & Bazar*\n*Cliente:* ${n}\n*Entrega:* ${e}\n` + (e !== "Retirada na Loja" ? `*Endereço:* ${end}\n` : "") + `*Pagamento:* ${document.getElementById("pag").value}\n\n`; cart.forEach(i => m += `• ${i.qtd}x ${i.nome} (Cód ${i.sku}) - R$ ${(i.preco*i.qtd).toFixed(2).replace(".",",")}\n`); m += `\n*TOTAL: R$ ${document.getElementById("total").innerText}*`; window.open("https://wa.me" + ZAP + "?text=" + encodeURIComponent(m), "_blank");
-); }
+function enviar(){ if(!cart.length) return alert("Carrinho vazio!"); const n = document.getElementById("nome").value.trim(), e = document.getElementById("entrega").value, end = document.getElementById("end").value.trim(); if(!n) return alert("Digite seu nome."); if(e !== "Retirada na Loja" && !end) return alert("Digite endereço e CEP."); let m = `*PEDIDO - JCA Pesca & Bazar*\n*Cliente:* ${n}\n*Entrega:* ${e}\n` + (e !== "Retirada na Loja" ? `*Endereço:* ${end}\n` : "") + `*Pagamento:* ${document.getElementById("pag").value}\n\n`; cart.forEach(i => m += `• ${i.qtd}x ${i.nome} (Cód ${i.sku}) - R$ ${(i.preco*i.qtd).toFixed(2).replace(".",",")}\n`); m += `\n*TOTAL: R$ ${document.getElementById("total").innerText}*`; window.open("https://whatsapp.com" + ZAP + "&text=" + encodeURIComponent(m), "_blank"); }
 </script>
 </body>
 </html>
