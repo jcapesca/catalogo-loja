@@ -35,36 +35,21 @@ header{background:#0f4c81;color:#fff;padding:15px;position:sticky;top:0;z-index:
 <div class="campo"><label>Pagamento</label><select id="pag"><option>Pix</option><option>Cartão</option><option>Dinheiro</option></select></div>
 </div><button class="btn-whats" onclick="enviar()">🚀 Enviar no WhatsApp</button></div></div>
 <script>
-const URL_CSV="https://google.com";
+const API_URL="https://script.google.com/macros/s/AKfycbxuqV7DGx0ATF3DhCpMvXSsCfSjHi6qi6TCgHis7IQJSQ-9mfFqexdmwb94llmlGuvn/exec";
 const ZAP="5521967601536";let prods=[],cart=[],cat="Todos";
 const IMG="data:image/svg+xml;utf8,<svg xmlns='http://w3.org' width='120' height='120' viewBox='0 0 24 24' fill='none' stroke='%23999' stroke-width='1.5'><rect x='3' y='3' width='18' height='18' rx='2'/><circle cx='8.5' cy='8.5' r='1.5'/><path d='M21 15l-5-5L5 21'/></svg>";
 
-function parseCSV(str){
-  const rows=[];let row=[],cur="",inQ=false;
-  for(let i=0;i<str.length;i++){
-    const c=str[i],n=str[i+1];
-    if(c==='"'&&inQ&&n==='"'){cur+='"';i++;}
-    else if(c==='"'){inQ=!inQ;}
-    else if(c===','&&!inQ){row.push(cur);cur="";}
-    else if((c==='\n'||c==='\r')&&!inQ){if(c==='\r'&&n==='\n')i++;row.push(cur);rows.push(row);row=[];cur="";}
-    else{cur+=c;}
-  }
-  if(cur||row.length){row.push(cur);rows.push(row);}
-  return rows;
-}
-
-fetch(URL_CSV).then(r=>r.text()).then(t=>{
-  const rows=parseCSV(t);
+fetch(API_URL).then(r=>r.json()).then(rows=>{
   prods=rows.slice(1).map(c=>{
-    const v=i=>(c[i]||"").trim();
-    const p=parseFloat(v(3).replace("R$","").replace(/\./g,"").replace(",",".").trim())||0;
+    const v=i=>String(c[i]??"").trim();
+    const p=typeof c[3]==="number"?c[3]:parseFloat(v(3).replace("R$","").replace(/\./g,"").replace(",",".").trim())||0;
     return{nome:v(0),sku:v(1),cat:v(2)||"Geral",preco:p,foto:v(4).startsWith("http")?v(4):IMG,est:parseInt(v(5))||0,ean:v(6)};
   }).filter(p=>p.nome&&p.est>0);
   if(!prods.length){document.getElementById("vitrine").innerHTML="<p style='color:orange'>Nenhum produto com estoque > 0 na Coluna F.</p>";return;}
   document.getElementById("cats").innerHTML=["Todos",...new Set(prods.map(p=>p.cat))].map(c=>`<button class="cat-btn ${c==='Todos'?'ativa':''}" onclick="setCat('${c}',this)">${c}</button>`).join("");
   desenhar(prods);
 }).catch(e=>{
-  document.getElementById("vitrine").innerHTML="<p style='color:red'>Erro CSV: "+e.message+"</p>";
+  document.getElementById("vitrine").innerHTML="<p style='color:red'>Erro API: "+e.message+"</p>";
 });
 
 function setCat(c,b){cat=c;document.querySelectorAll(".cat-btn").forEach(x=>x.classList.remove("ativa"));b.classList.add("ativa");filtrar()}
