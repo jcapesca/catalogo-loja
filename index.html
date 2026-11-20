@@ -35,7 +35,53 @@ header{background:#0f4c81;color:#fff;padding:15px;position:sticky;top:0;z-index:
 <div class="campo"><label>Pagamento</label><select id="pag"><option>Pix</option><option>Cartão</option><option>Dinheiro</option></select></div>
 </div><button class="btn-whats" onclick="enviar()">🚀 Enviar no WhatsApp</button></div></div>
 <script>
-const API_URL = "https://elk.sh";
+const SHEET_ID = "1aqXlxsuLk8KuyuDr73IDyI1ZtfFqSFoIko9lYg1M2N4";
+const ZAP = "5521967601536";
+let prods = [], cart = [], cat = "Todos";
+
+const IMG = "data:image/svg+xml;utf8,<svg xmlns='http://w3.org' width='120' height='120' viewBox='0 0 24 24' fill='none' stroke='%23999' stroke-width='1.5'><rect x='3' y='3' width='18' height='18' rx='2'/><circle cx='8.5' cy='8.5' r='1.5'/><path d='M21 15l-5-5L5 21'/></svg>";
+
+window.carregarDados = function(json) {
+  try {
+    const linhas = json.table.rows || [];
+    prods = linhas.map(r => {
+      const c = r.c || [];
+      const val = (idx) => (c[idx] && c[idx].v !== null && c[idx].v !== undefined) ? c[idx].v : "";
+      const rawPreco = val(3);
+      const precoLimpo = typeof rawPreco === "number"
+        ? rawPreco
+        : parseFloat(String(rawPreco).replace("R$", "").replace(/\./g, "").replace(",", ".").trim()) || 0;
+
+      return {
+        nome: String(val(0)).trim(),
+        sku: String(val(1)).trim(),
+        cat: String(val(2) || "Geral").trim(),
+        preco: precoLimpo,
+        foto: String(val(4)).trim().startsWith("http") ? String(val(4)).trim() : IMG,
+        est: parseInt(val(5)) || 0
+      };
+    }).filter(p => p.nome && p.nome.toLowerCase() !== "nome" && p.est > 0);
+
+    const categorias = ["Todos", ...new Set(prods.map(p => p.cat))];
+    document.getElementById("cats").innerHTML = categorias
+      .map(c => `<button class="cat-btn ${c === 'Todos' ? 'ativa' : ''}" onclick="setCat('${c}', this)">${c}</button>`)
+      .join("");
+
+    desenhar(prods);
+  } catch (e) {
+    document.getElementById("vitrine").innerHTML = `<p style="color:red">Erro ao processar planilha: ${e.message}</p>`;
+  }
+};
+
+(function() {
+  const s = document.createElement("script");
+  s.src = `https://google.com{SHEET_ID}/gviz/tq?gid=0&tqx=out:json;responseHandler:carregarDados`;
+  s.onerror = function() {
+    document.getElementById("vitrine").innerHTML = "<p style='color:red'>Não foi possível conectar com a planilha. Verifique o compartilhamento.</p>";
+  };
+  document.body.appendChild(s);
+})();
+
 const ZAP = "5521967601536";
 let prods = [], cart = [], cat = "Todos";
 
