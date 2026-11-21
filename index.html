@@ -71,7 +71,7 @@
   </div>
 
   <script>
-    const API_URL = "https://script.google.com/macros/s/" + "AKfycbyoTjNo1Xo1__GKBpKh9o3WbssG8mZCmTggxVGP5ouxlINmv2r2nlHa-VMdDNLsz5gz/exec";
+    const API_URL = "https://google.com" + "AKfycbyoTjNo1Xo1__GKBpKh9o3WbssG8mZCmTggxVGP5ouxlINmv2r2nlHa-VMdDNLsz5gz/exec";
     const ZAP = "5521967601536";
     let prods = [], cart = [], cat = "Todos";
     const IMG = "data:image/svg+xml;utf8,<svg xmlns='http://w3.org' width='120' height='120' viewBox='0 0 24 24' fill='none' stroke='%23999' stroke-width='1.5'><rect x='3' y='3' width='18' height='18' rx='2'/><circle cx='8.5' cy='8.5' r='1.5'/><path d='M21 15l-5-5L5 21'/></svg>";
@@ -126,7 +126,7 @@
       let msg = `*Novo Pedido - JCA Pesca & Bazar*\n\n*Cliente:* ${nome}\n*Recebimento:* ${entrega}\n` + (entrega !== "Retirada na Loja" ? `*Endereço:* ${end}\n` : "") + `*Pagamento:* ${pag}\n\n*Itens do Pedido:*\n`;
       cart.forEach(i => msg += `• ${i.qtd}x ${i.nome} (Cód: ${i.sku}) - R$ ${(i.preco * i.qtd).toFixed(2).replace(".", ",")}\n`);
       msg += `\n*Total: R$ ${document.getElementById("total").innerText}*`;
-      window.open("https://whatsapp.com" + "send?phone=" + ZAP + "&text=" + encodeURIComponent(msg), "_blank");
+      window.location.href = "https://whatsapp.com" + "send?phone=" + ZAP + "&text=" + encodeURIComponent(msg);
     }
   </script>
 </body>
